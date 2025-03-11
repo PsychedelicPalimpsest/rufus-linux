@@ -10,10 +10,25 @@
 #ifdef HAVE_WINSOCK_H
 // Heck if we're gonna use WinSock just for htonl and friends
 #include <stdlib.h>
+
+
+#ifdef _WIN32
 #define htonl _byteswap_ulong
 #define ntohl _byteswap_ulong
 #define htons _byteswap_ushort
 #define ntohs _byteswap_ushort
+#else
+
+#include <byteswap.h>
+#define htonl bswap_64
+#define ntohl bswap_64
+#define htons bswap_16
+#define ntohs bswap_16
+
+#endif
+
+
+
 #else
 #include <arpa/inet.h>
 #endif

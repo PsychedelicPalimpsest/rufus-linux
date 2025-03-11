@@ -3,8 +3,10 @@
  * everything we need.  (cross fingers)  Other header files may have
  * also defined the types that we need.
  */
+
+
 #if (!defined(_LINUX_TYPES_H) && !defined(_BLKID_TYPES_H) && \
-	!defined(_EXT2_TYPES_H))
+	!defined(_EXT2_TYPES_H) && !defined(__linux__ ))
 #define _EXT2_TYPES_H
 
 #include <stdint.h>
@@ -58,6 +60,12 @@ typedef int64_t __s64;
 #undef __S64_TYPEDEF
 #undef __U64_TYPEDEF
 
+
+#else
+// This is an EVIL hack to get it
+// working on my linux system
+#include "asm-generic/int-ll64.h"
+
 #endif /* _*_TYPES_H */
 
 /* endian checking stuff */
@@ -88,3 +96,4 @@ typedef __u64	__bitwise	__be64;
 /* These defines are needed for the public ext2fs.h header file */
 #define HAVE_SYS_TYPES_H 1
 #undef WORDS_BIGENDIAN
+

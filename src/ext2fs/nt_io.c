@@ -13,6 +13,9 @@
  * %End-Header%
  */
 
+// Compiling elseware is suicide
+#ifdef _WIN32
+
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -749,3 +752,5 @@ static errcode_t nt_flush(io_channel channel)
 
 	return 0;
 }
+
+#endif

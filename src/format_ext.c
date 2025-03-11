@@ -38,8 +38,17 @@
 #include "localization.h"
 #include "ext2fs/ext2fs.h"
 
-extern const char* FileSystemLabel[FS_MAX];
+
+#ifdef _WIN32
 extern io_manager nt_io_manager;
+#define IO_MANAGER nt_io_manager
+#else
+extern io_manager unix_io_manager;
+#define IO_MANAGER unix_io_manager
+#endif
+
+
+extern const char* FileSystemLabel[FS_MAX];
 extern DWORD ext2_last_winerror(DWORD default_error);
 static float ext2_percent_start = 0.0f, ext2_percent_share = 0.5f;
 const float ext2_max_marker = 80.0f;
@@ -204,7 +213,7 @@ const char* GetExtFsLabel(DWORD DriveIndex, uint64_t PartitionOffset)
 	static char label[EXT2_LABEL_LEN + 1];
 	errcode_t r;
 	ext2_filsys ext2fs = NULL;
-	io_manager manager = nt_io_manager;
+	io_manager manager = IO_MANAGER;
 	char* volume_name = GetExtPartitionName(DriveIndex, PartitionOffset);
 
 	if (volume_name == NULL)
@@ -241,7 +250,7 @@ BOOL FormatExtFs(DWORD DriveIndex, uint64_t PartitionOffset, DWORD BlockSize, LP
 	char* volume_name = NULL;
 	int i, count;
 	struct ext2_super_block features = { 0 };
-	io_manager manager = nt_io_manager;
+	io_manager manager = IO_MANAGER;
 	blk_t journal_size;
 	blk64_t size = 0, cur;
 	ext2_filsys ext2fs = NULL;
