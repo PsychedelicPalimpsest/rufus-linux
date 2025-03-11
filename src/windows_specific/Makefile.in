@@ -76,7 +76,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-subdir = src/ms-sys
+subdir = src/windows_specific
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -91,13 +91,11 @@ AM_V_AR = $(am__v_AR_@AM_V@)
 am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
 am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
-libmssys_a_AR = $(AR) $(ARFLAGS)
-libmssys_a_LIBADD =
-am_libmssys_a_OBJECTS = libmssys_a-fat12.$(OBJEXT) \
-	libmssys_a-fat16.$(OBJEXT) libmssys_a-fat32.$(OBJEXT) \
-	libmssys_a-ntfs.$(OBJEXT) libmssys_a-partition_info.$(OBJEXT) \
-	libmssys_a-br.$(OBJEXT) libmssys_a-file.$(OBJEXT)
-libmssys_a_OBJECTS = $(am_libmssys_a_OBJECTS)
+libwindows_specific_a_AR = $(AR) $(ARFLAGS)
+libwindows_specific_a_LIBADD =
+am_libwindows_specific_a_OBJECTS =  \
+	libwindows_specific_a-win_rufus.$(OBJEXT)
+libwindows_specific_a_OBJECTS = $(am_libwindows_specific_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -129,7 +127,7 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libmssys_a_SOURCES)
+SOURCES = $(libwindows_specific_a_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -245,9 +243,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = libmssys.a
-libmssys_a_SOURCES = fat12.c fat16.c fat32.c ntfs.c partition_info.c br.c file.c
-libmssys_a_CFLAGS = -I$(srcdir)/inc $(AM_CFLAGS) -I$(srcdir)/../linux_compat
+noinst_LIBRARIES = libwindows_specific.a
+libwindows_specific_a_SOURCES = win_rufus.c
+libwindows_specific_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -Wno-undef -Wno-strict-aliasing -Wno-shadow
 all: all-am
 
 .SUFFIXES:
@@ -261,9 +259,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign --ignore-deps src/ms-sys/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign --ignore-deps src/windows_specific/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign --ignore-deps src/ms-sys/Makefile
+	  $(AUTOMAKE) --foreign --ignore-deps src/windows_specific/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -286,10 +284,10 @@ $(am__aclocal_m4_deps):
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
-libmssys.a: $(libmssys_a_OBJECTS) $(libmssys_a_DEPENDENCIES) $(EXTRA_libmssys_a_DEPENDENCIES) 
-	$(AM_V_at)-rm -f libmssys.a
-	$(AM_V_AR)$(libmssys_a_AR) libmssys.a $(libmssys_a_OBJECTS) $(libmssys_a_LIBADD)
-	$(AM_V_at)$(RANLIB) libmssys.a
+libwindows_specific.a: $(libwindows_specific_a_OBJECTS) $(libwindows_specific_a_DEPENDENCIES) $(EXTRA_libwindows_specific_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libwindows_specific.a
+	$(AM_V_AR)$(libwindows_specific_a_AR) libwindows_specific.a $(libwindows_specific_a_OBJECTS) $(libwindows_specific_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libwindows_specific.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -303,47 +301,11 @@ distclean-compile:
 .c.obj:
 	$(AM_V_CC)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-libmssys_a-fat12.o: fat12.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-fat12.o `test -f 'fat12.c' || echo '$(srcdir)/'`fat12.c
+libwindows_specific_a-win_rufus.o: win_rufus.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-win_rufus.o `test -f 'win_rufus.c' || echo '$(srcdir)/'`win_rufus.c
 
-libmssys_a-fat12.obj: fat12.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-fat12.obj `if test -f 'fat12.c'; then $(CYGPATH_W) 'fat12.c'; else $(CYGPATH_W) '$(srcdir)/fat12.c'; fi`
-
-libmssys_a-fat16.o: fat16.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-fat16.o `test -f 'fat16.c' || echo '$(srcdir)/'`fat16.c
-
-libmssys_a-fat16.obj: fat16.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-fat16.obj `if test -f 'fat16.c'; then $(CYGPATH_W) 'fat16.c'; else $(CYGPATH_W) '$(srcdir)/fat16.c'; fi`
-
-libmssys_a-fat32.o: fat32.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-fat32.o `test -f 'fat32.c' || echo '$(srcdir)/'`fat32.c
-
-libmssys_a-fat32.obj: fat32.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-fat32.obj `if test -f 'fat32.c'; then $(CYGPATH_W) 'fat32.c'; else $(CYGPATH_W) '$(srcdir)/fat32.c'; fi`
-
-libmssys_a-ntfs.o: ntfs.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-ntfs.o `test -f 'ntfs.c' || echo '$(srcdir)/'`ntfs.c
-
-libmssys_a-ntfs.obj: ntfs.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-ntfs.obj `if test -f 'ntfs.c'; then $(CYGPATH_W) 'ntfs.c'; else $(CYGPATH_W) '$(srcdir)/ntfs.c'; fi`
-
-libmssys_a-partition_info.o: partition_info.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-partition_info.o `test -f 'partition_info.c' || echo '$(srcdir)/'`partition_info.c
-
-libmssys_a-partition_info.obj: partition_info.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-partition_info.obj `if test -f 'partition_info.c'; then $(CYGPATH_W) 'partition_info.c'; else $(CYGPATH_W) '$(srcdir)/partition_info.c'; fi`
-
-libmssys_a-br.o: br.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-br.o `test -f 'br.c' || echo '$(srcdir)/'`br.c
-
-libmssys_a-br.obj: br.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-br.obj `if test -f 'br.c'; then $(CYGPATH_W) 'br.c'; else $(CYGPATH_W) '$(srcdir)/br.c'; fi`
-
-libmssys_a-file.o: file.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-file.o `test -f 'file.c' || echo '$(srcdir)/'`file.c
-
-libmssys_a-file.obj: file.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmssys_a_CFLAGS) $(CFLAGS) -c -o libmssys_a-file.obj `if test -f 'file.c'; then $(CYGPATH_W) 'file.c'; else $(CYGPATH_W) '$(srcdir)/file.c'; fi`
+libwindows_specific_a-win_rufus.obj: win_rufus.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-win_rufus.obj `if test -f 'win_rufus.c'; then $(CYGPATH_W) 'win_rufus.c'; else $(CYGPATH_W) '$(srcdir)/win_rufus.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
