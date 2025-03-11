@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <stdint.h>
 #include "rufus.h"
 #include "msapi_utf8.h"

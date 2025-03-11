@@ -18,7 +18,7 @@
  */
 
 #include <stdint.h>
-#include <windows.h>
+#include <pseudo_windows.h>
 // Temporary workaround for MinGW32 delay-loading
 // See https://github.com/pbatard/rufus/pull/2513
 #if defined(__MINGW32__)

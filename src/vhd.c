@@ -24,7 +24,7 @@
 // windows.h, and then take care of the workaround (and virtdisk.h
 // include) in vhd.h.
 #define _INC_VIRTDISK
-#include <windows.h>
+#include <pseudo_windows.h>
 #undef _INC_VIRTDISK
 #include <windowsx.h>
 #include <stdlib.h>

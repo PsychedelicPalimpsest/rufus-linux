@@ -18,7 +18,7 @@
  */
 
 #include <stdint.h>
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <winioctl.h>	// for MEDIA_TYPE
 
 #pragma once

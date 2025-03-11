@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <windows.h>
+#include <pseudo_windows.h>
 
 const char error_msg[] = "Unable to synchronize with UI application.";
 

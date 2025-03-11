@@ -23,7 +23,7 @@
 #include <crtdbg.h>
 #endif
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <stdio.h>
 #include <wincrypt.h>
 #include <wintrust.h>

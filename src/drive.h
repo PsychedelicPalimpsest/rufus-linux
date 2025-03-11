@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <stdint.h>
 #include <winioctl.h>   // for DISK_GEOMETRY
 #include <winternl.h>

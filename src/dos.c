@@ -24,7 +24,7 @@
 #include <crtdbg.h>
 #endif
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <windowsx.h>
 #include <stdio.h>
 #include <stdlib.h>

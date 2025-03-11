@@ -18,7 +18,7 @@
  * %End-Header%
  */
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <stdint.h>
 
 #include "ext2fs/ext2fs.h"

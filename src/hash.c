@@ -66,7 +66,7 @@
 #include <inttypes.h>
 #include <errno.h>
 #include <intrin.h>
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <windowsx.h>
 
 #include "db.h"

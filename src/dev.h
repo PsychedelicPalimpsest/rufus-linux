@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <cfgmgr32.h>
 
 #define USB_SPEED_UNKNOWN			0

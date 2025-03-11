@@ -21,7 +21,7 @@
 #include <string.h>
 #include <time.h>
 #include <setjmp.h>
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <stdint.h>
 
 #include "rufus.h"

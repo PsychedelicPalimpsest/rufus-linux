@@ -21,7 +21,7 @@
 #include <crtdbg.h>
 #endif
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <sddl.h>
 #include <gpedit.h>
 #include <assert.h>

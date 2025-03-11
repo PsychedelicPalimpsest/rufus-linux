@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include "resource.h"
 
 #pragma once

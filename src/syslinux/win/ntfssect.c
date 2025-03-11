@@ -19,7 +19,7 @@
  *   http://www.wd-3.com/archive/luserland.htm
  */
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <winioctl.h>
 #include <stddef.h>
 #include <string.h>

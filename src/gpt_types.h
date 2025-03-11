@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <windows.h>
+#include <pseudo_windows.hh>
 // MinGW won't properly embed the GUIDs unless the following is defined
 #define INITGUID
 #include <guiddef.h>
