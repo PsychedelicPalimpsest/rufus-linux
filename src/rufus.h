@@ -18,10 +18,72 @@
  */
 #pragma once
 
+#include <pseudo_windows.h>
 
 #ifdef _WIN32
 #include "windows_specific/win_rufus.h"
 #endif
+
+/* Special handling for old .c32 files we need to replace */
+#define NB_OLD_C32          2
+#define OLD_C32_NAMES       { "menu.c32", "vesamenu.c32" }
+#define OLD_C32_THRESHOLD   { 53500, 148000 }
+
+
+/* Isolate the Syslinux version numbers */
+#define SL_MAJOR(x) ((uint8_t)((x)>>8))
+#define SL_MINOR(x) ((uint8_t)(x))
+
+typedef struct {
+	char* id;
+	char* name;
+	char* display_name;
+	char* label;
+	char* hub;
+	DWORD index;
+	uint32_t port;
+	uint64_t size;
+} RUFUS_DRIVE;
+
+typedef struct {
+	uint16_t version[3];
+	uint32_t platform_min[2];		// minimum platform version required
+	char* download_url;
+	char* release_notes;
+} RUFUS_UPDATE;
+
+typedef struct {
+	DWORD Type;
+	DWORD DeviceNum;
+	DWORD BufSize;
+	LONGLONG DeviceSize;
+	char* DevicePath;
+	char* ImagePath;
+	char* Label;
+} IMG_SAVE;
+
+
+
+
+
+/**
+ * Globals
+ */
+extern RUFUS_UPDATE update;
+extern WORD selected_langid;
+extern DWORD ErrorStatus, DownloadStatus, MainThreadId, LastWriteError;
+extern BOOL use_own_c32[NB_OLD_C32], detect_fakes, op_in_progress, right_to_left_mode;
+extern BOOL allow_dual_uefi_bios, large_drive, usb_debug;
+extern uint8_t image_options, *pe256ssp;
+extern uint16_t rufus_version[3], embedded_sl_version[2];
+extern uint32_t pe256ssp_size;
+extern uint64_t persistence_size;
+extern int64_t iso_blocking_status;
+extern size_t ubuffer_pos;
+extern int dialog_showing, force_update, fs_type, boot_type, partition_type, target_type;
+extern unsigned long syslinux_ldlinux_len[2];
+extern char szFolderPath[MAX_PATH], app_dir[MAX_PATH], temp_dir[MAX_PATH], system_dir[MAX_PATH];
+extern char sysnative_dir[MAX_PATH], app_data_dir[MAX_PATH], *image_path, *fido_url;
 
 
 

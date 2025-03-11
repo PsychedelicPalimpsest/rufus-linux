@@ -19,6 +19,18 @@
 #ifndef _MINWINDEF_
 #define _MINWINDEF_
 
+
+
+#ifndef max
+#define max(a,b)   (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef min
+#define min(a,b)   (((a) < (b)) ? (a) : (b))
+#endif
+
+
+
+
 #ifndef NO_STRICT
 # ifndef STRICT
 #  define STRICT
@@ -240,6 +252,7 @@ typedef long            LONG;
 typedef unsigned long   DWORD,      *PDWORD,   *LPDWORD;
 #else
 typedef int             LONG;
+typedef long long LONGLONG;
 typedef unsigned int    DWORD,      *PDWORD,   *LPDWORD;
 #endif
 
@@ -254,14 +267,6 @@ typedef const void      *LPCVOID;
 #define MAKEWORD(low,high)     ((WORD)(((BYTE)((DWORD_PTR)(low) & 0xFF)) | (((WORD)((BYTE)((DWORD_PTR)(high) & 0xFF))) << 8))
 #define MAKELONG(low,high)     ((LONG)(((WORD)((DWORD_PTR)(low) & 0xFFFF)) | (((DWORD)((WORD)((DWORD_PTR)(high) & 0xFFFF))) << 16))
 
-#ifndef NOMINMAX
-#ifndef max
-#define max(a,b)   (((a) > (b)) ? (a) : (b))
-#endif
-#ifndef min
-#define min(a,b)   (((a) < (b)) ? (a) : (b))
-#endif
-#endif
 
 #ifdef MAX_PATH
 #undef MAX_PATH

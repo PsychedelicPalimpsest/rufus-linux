@@ -22,6 +22,7 @@
 #include <wctype.h>
 
 
+
 // This can and should be done better,
 // but will work in this case!
 DWORD CharUpperBuffW(WCHAR *str, DWORD len)

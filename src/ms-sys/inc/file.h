@@ -1,6 +1,9 @@
 #ifndef FILE_H
 #define FILE_H
 
+
+#include "pseudo_windows.h"
+
 #include <stdint.h>
 
 /* Max valid value of uiLen for contains_data */
@@ -28,12 +31,12 @@ int write_data(FILE *fp, uint64_t Position,
                const void *pData, uint64_t Len);
 
 /* Writes nSectors of size SectorSize starting at sector StartSector */
-int64_t write_sectors(void *hDrive, uint64_t SectorSize,
+int64_t write_sectors(HANDLE hDrive, uint64_t SectorSize,
                       uint64_t StartSector, uint64_t nSectors,
                       const void *pBuf);
 
 /* Reads nSectors of size SectorSize starting at sector StartSector */
-int64_t read_sectors(void *hDrive, uint64_t SectorSize,
+int64_t read_sectors(HANDLE hDrive, uint64_t SectorSize,
                      uint64_t StartSector, uint64_t nSectors,
                      void *pBuf);
 

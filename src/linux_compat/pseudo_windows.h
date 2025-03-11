@@ -25,13 +25,21 @@
 #include <windows.h>
 #else
 
+/**
+ * I know this is not one to one, but just working
+ * with raw unix fileids and pretending they are
+ * Windows HANDLEs will work well enough for Rufus
+ */
 
+#define INVALID_HANDLE_VALUE -1
+typedef int HANDLE;
 
 
 #include "minwindef.h"
 #include "locale.h"
 #include <stdlib.h>
 #include <errno.h>
+#include <inttypes.h>
 
 #define _snprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)
 DWORD CharUpperBuffW(WCHAR *str, DWORD len);

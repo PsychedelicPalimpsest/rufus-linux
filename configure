@@ -4813,6 +4813,8 @@ ac_config_files="$ac_config_files src/bled/Makefile"
 
 ac_config_files="$ac_config_files src/linux_compat/Makefile"
 
+ac_config_files="$ac_config_files src/windows_specific/Makefile"
+
 ac_config_files="$ac_config_files src/ext2fs/Makefile"
 
 ac_config_files="$ac_config_files src/libcdio/iso9660/Makefile"
@@ -5557,6 +5559,7 @@ do
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/bled/Makefile") CONFIG_FILES="$CONFIG_FILES src/bled/Makefile" ;;
     "src/linux_compat/Makefile") CONFIG_FILES="$CONFIG_FILES src/linux_compat/Makefile" ;;
+    "src/windows_specific/Makefile") CONFIG_FILES="$CONFIG_FILES src/windows_specific/Makefile" ;;
     "src/ext2fs/Makefile") CONFIG_FILES="$CONFIG_FILES src/ext2fs/Makefile" ;;
     "src/libcdio/iso9660/Makefile") CONFIG_FILES="$CONFIG_FILES src/libcdio/iso9660/Makefile" ;;
     "src/libcdio/udf/Makefile") CONFIG_FILES="$CONFIG_FILES src/libcdio/udf/Makefile" ;;
