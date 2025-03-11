@@ -16,10 +16,6 @@
 #ifndef LIBBB_H
 #define LIBBB_H 1
 
-#ifndef _WIN32
-#error Only Windows platforms are supported
-#endif
-
 #include "platform.h"
 #include "msapi_utf8.h"
 
@@ -34,10 +30,16 @@
 #include <stddef.h>
 #include <string.h>
 #include <time.h>
-#include <direct.h>
+
 #include <sys/stat.h>
 #include <sys/types.h>
+
+
+#ifdef _WIN32
+#include <direct.h>
 #include <io.h>
+#endif
+
 
 #define ONE_TB                          1099511627776ULL
 
@@ -71,6 +73,7 @@
 #define IF_FEATURE_SEAMLESS_ZSTD(x)     x
 #endif
 
+#ifdef _WIN32
 #ifndef _MODE_T_
 #define _MODE_T_
 typedef unsigned short mode_t;
@@ -90,6 +93,9 @@ typedef unsigned int gid_t;
 #define _UID_T_
 typedef unsigned int uid_t;
 #endif
+
+#endif
+
 
 #ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
@@ -180,14 +186,34 @@ static inline void *xrealloc(void *ptr, size_t size) {
 
 #define bb_msg_read_error "read error"
 #define bb_msg_write_error "write error"
-#define bb_make_directory(path, mode, flags) SHCreateDirectoryExU(NULL, path, NULL)
 
+#ifdef _WIN32
+#define bb_make_directory(path, mode, flags) SHCreateDirectoryExU(NULL, path, NULL)
+#else
+#define bb_make_directory(path, mode, flags) mkdir(path, 0)
+#endif
+
+
+// WTF IS THE POINT HERE???????????
+#ifdef _WIN32
 static inline int link(const char *oldpath, const char *newpath) { errno = ENOSYS; return -1; }
 static inline int symlink(const char *oldpath, const char *newpath) { errno = ENOSYS; return -1; }
 static inline int chown(const char *path, uid_t owner, gid_t group) { errno = ENOSYS; return -1; }
 static inline int mknod(const char *pathname, mode_t mode, dev_t dev) { errno = ENOSYS; return -1; }
 static inline int utimes64(const char* filename, const struct timeval64 times64[2]) { errno = ENOSYS; return -1; }
 static inline int fnmatch(const char *pattern, const char *string, int flags) { return PathMatchSpecA(string, pattern) ? 0 : 1; }
+#endif
+
+
+#ifndef _WIN32
+#include <unistd.h>
+#define _read read
+#define _write write
+#define _close close
+#endif
+
+
+
 static inline pid_t wait(int* status) { *status = 4; return -1; }
 #define wait_any_nohang wait
 
@@ -283,18 +309,27 @@ static inline void bb_copyfd_exact_size(int fd1, int fd2, off_t size)
 	free(buf);
 }
 
+#ifndef _WIN32
+#include <time.h>
+#else
 static inline struct tm *localtime_r(const time_t *timep, struct tm *result) {
 	if (localtime_s(result, timep) != 0)
 		result = NULL;
 	return result;
 }
+#endif
+
+#ifdef _WIN32
+// ?????? Not sure what this is doing exactly
+#define mkdir(x, y) _mkdirU(x)
+#endif
+
 
 #define safe_read full_read
 #define lstat stat
 #define xmalloc malloc
 #define xzalloc(x) calloc(x, 1)
 #define malloc_or_warn malloc
-#define mkdir(x, y) _mkdirU(x)
 struct fd_pair { int rd; int wr; };
 void xpipe(int filedes[2]) FAST_FUNC;
 #define xpiped_pair(pair) xpipe(&((pair).rd))
@@ -304,8 +339,13 @@ void xpipe(int filedes[2]) FAST_FUNC;
 static inline void xmove_fd(int from, int to)
 {
 	if (from != to) {
+		#ifdef _WIN32
 		_dup2(from, to);
 		_close(from);
+		#else
+		dup2(from, to);
+		close(from);
+		#endif
 	}
 }
 
@@ -338,6 +378,7 @@ static inline void xmove_fd(int from, int to)
 #define O_EXCL  _O_EXCL
 #endif
 
+#ifdef _WIN32
 /* MinGW doesn't know these */
 #define _S_IFLNK    0xA000
 #define _S_IFSOCK   0xC000
@@ -345,5 +386,7 @@ static inline void xmove_fd(int from, int to)
 #define S_IFSOCK    _S_IFSOCK
 #define S_ISLNK(m)  (((m) & _S_IFMT) == _S_IFLNK)
 #define S_ISSOCK(m) (((m) & _S_IFMT) == _S_IFSOCK)
+#endif
+
 
 #endif

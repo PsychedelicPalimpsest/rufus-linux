@@ -49,7 +49,7 @@ void FAST_FUNC header_verbose_list(const file_header_t *file_header)
 		file_header->mode,
 		(unsigned)file_header->uid,
 		(unsigned)file_header->gid,
-		file_header->size,
+		(long long int)file_header->size,
 		1900 + ptm->tm_year,
 		1 + ptm->tm_mon,
 		ptm->tm_mday,

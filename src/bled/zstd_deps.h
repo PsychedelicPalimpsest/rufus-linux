@@ -39,8 +39,11 @@
 #include <limits.h>
 #include <stddef.h>
 #include <string.h>
-#include <crtdefs.h>
 #include "zstd_config.h"
+
+#ifdef _WIN32
+#include <crtdefs.h>
+#endif
 
 #if defined(__GNUC__) && __GNUC__ >= 4
 # define ZSTD_memcpy(d,s,l) __builtin_memcpy((d),(s),(l))

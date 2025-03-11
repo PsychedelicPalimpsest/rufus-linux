@@ -8,6 +8,8 @@
 #include "libbb.h"
 #include "bb_archive.h"
 
+// TODO: Figure out how to best convert to linux
+#ifdef _WIN32
 /* Find a string in a shell pattern list */
 const llist_t* FAST_FUNC find_list_entry(const llist_t *list, const char *filename)
 {
@@ -51,3 +53,4 @@ const llist_t* FAST_FUNC find_list_entry2(const llist_t *list, const char *filen
 	}
 	return NULL;
 }
+#endif

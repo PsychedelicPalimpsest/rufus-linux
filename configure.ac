@@ -1,11 +1,13 @@
 AC_INIT([rufus], [4.7], [https://github.com/pbatard/rufus/issues], [rufus], [https://rufus.ie])
-AM_INIT_AUTOMAKE([-Wno-portability foreign no-dist no-dependencies])
+AM_INIT_AUTOMAKE([foreign no-dist no-dependencies subdir-objects])  # Removed deprecated flags
+
 AC_CONFIG_SRCDIR([src/rufus.c])
 AC_CONFIG_MACRO_DIR([m4])
 AM_SILENT_RULES([yes])
 
 AC_PREREQ([2.50])
 AC_PROG_CC
+
 # autoconf 2.61 doesn't have AC_PROG_AR, but 2.63 has it
 AC_DEFUN([AC_PROG_AR], [AC_CHECK_TOOL(AR, ar, :)])
 AC_PROG_AR
@@ -25,10 +27,10 @@ AM_LDFLAGS="${AM_LDFLAGS} -Wl,-no-undefined -Wl,--nxcompat -Wl,--no-insert-times
 
 # Debug symbols
 AC_ARG_ENABLE([debug],
-	[AS_HELP_STRING([--enable-debug],
-		[keep debug symbols for gdb (default=yes)])],
-	[debug_enabled=$enableval],
-	[debug_enabled='yes'])
+  [AS_HELP_STRING([--enable-debug],
+    [keep debug symbols for gdb (default=yes)])],
+  [debug_enabled=$enableval],
+  [debug_enabled='yes'])
 if test "x$debug_enabled" != "xno" ; then
   CFLAGS="-g -O0"
 else
@@ -61,7 +63,7 @@ AM_CFLAGS="$AM_CFLAGS -D_FILE_OFFSET_BITS=64 -D_OFF_T_ -D_off_t=off64_t -Doff_t=
 saved_CFLAGS="${CFLAGS}"
 CFLAGS="$CFLAGS -Wno-pointer-sign"
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],
-	[nopointersign_cflags="-Wno-pointer-sign"], [nopointersign_cflags=""])
+  [nopointersign_cflags="-Wno-pointer-sign"], [nopointersign_cflags=""])
 CFLAGS="${saved_CFLAGS}"
 
 AM_CFLAGS="$AM_CFLAGS -DUNICODE -D_UNICODE -UNDEBUG -DCOBJMACROS -D__USE_MINGW_ANSI_STDIO=0 -std=gnu11 -Wshadow -Wall -Wformat-security -Wundef -Wunused -Wstrict-prototypes -Wno-restrict -Wno-array-bounds -Werror-implicit-function-declaration -Wbidi-chars=none $nopointersign_cflags"
@@ -75,6 +77,7 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([.mingw/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/bled/Makefile])
+AC_CONFIG_FILES([src/linux_compat/Makefile])
 AC_CONFIG_FILES([src/ext2fs/Makefile])
 AC_CONFIG_FILES([src/libcdio/iso9660/Makefile])
 AC_CONFIG_FILES([src/libcdio/udf/Makefile])

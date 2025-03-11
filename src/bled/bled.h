@@ -6,7 +6,7 @@
  * Licensed under GPLv2 or later, see file LICENSE in this source tree.
  */
 
-#include <windows.h>
+#include <pseudo_windows.h>
 #include <stdint.h>
 
 #pragma once
@@ -39,7 +39,9 @@ typedef enum {
 int64_t bled_uncompress(const char* src, const char* dst, int type);
 
 /* Uncompress using Windows handles */
+#ifdef _WIN32
 int64_t bled_uncompress_with_handles(HANDLE hSrc, HANDLE hDst, int type);
+#endif
 
 /* Uncompress file 'src', compressed using 'type', to buffer 'buf' of size 'size' */
 int64_t bled_uncompress_to_buffer(const char* src, char* buf, size_t size, int type);

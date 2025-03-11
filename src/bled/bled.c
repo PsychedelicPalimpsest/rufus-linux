@@ -101,6 +101,7 @@ err:
 	return ret;
 }
 
+#ifdef _WIN32
 /* Uncompress using Windows handles */
 int64_t bled_uncompress_with_handles(HANDLE hSrc, HANDLE hDst, int type)
 {
@@ -138,6 +139,7 @@ int64_t bled_uncompress_with_handles(HANDLE hSrc, HANDLE hDst, int type)
 
 	return unpacker[type](&xstate);
 }
+#endif
 
 /* Uncompress file 'src', compressed using 'type', to buffer 'buf' of size 'size' */
 int64_t bled_uncompress_to_buffer(const char* src, char* buf, size_t size, int type)

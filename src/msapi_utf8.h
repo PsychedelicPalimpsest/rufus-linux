@@ -22,10 +22,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include <windows.h>
+#define MSAPI_H
+#include "pseudo_windows.h"
 #include <stdio.h>
-#include <shlobj.h>
+
 #include <ctype.h>
+
+#include <errno.h>
+#include <fcntl.h>
+
+#ifdef _WIN32
+#include <shlobj.h>
+#include <io.h>
 #include <aclapi.h>
 #include <accctrl.h>
 #include <commdlg.h>
@@ -34,12 +42,17 @@
 #include <setupapi.h>
 #include <direct.h>
 #include <share.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <io.h>
+#include <psapi.h>
+
+#else
+#include <stdlib.h>
+
+#endif
+
+
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <psapi.h>
+
 
 #pragma once
 #if defined(_MSC_VER)
@@ -58,6 +71,8 @@ extern "C" {
 	WideCharToMultiByte(CP_UTF8, 0, wsrc, -1, dest, dest_size, NULL, NULL)
 #define utf8_to_wchar_no_alloc(src, wdest, wdest_size) \
 	MultiByteToWideChar(CP_UTF8, 0, src, -1, wdest, wdest_size)
+
+#ifdef _WIN32
 #define Edit_ReplaceSelU(hCtrl, str) ((void)SendMessageLU(hCtrl, EM_REPLACESEL, (WPARAM)FALSE, str))
 #define ComboBox_AddStringU(hCtrl, str) ((int)(DWORD)SendMessageLU(hCtrl, CB_ADDSTRING, (WPARAM)FALSE, str))
 #define ComboBox_InsertStringU(hCtrl, index, str) ((int)(DWORD)SendMessageLU(hCtrl, CB_INSERTSTRING, (WPARAM)index, str))
@@ -67,6 +82,7 @@ extern "C" {
 #define ListView_SetItemTextU(hwndLV,i,iSubItem_,pszText_) { LVITEMW _ms_wlvi; _ms_wlvi.iSubItem = iSubItem_; \
 	_ms_wlvi.pszText = utf8_to_wchar(pszText_); \
 	SNDMSG((hwndLV),LVM_SETITEMTEXTW,(WPARAM)(i),(LPARAM)&_ms_wlvi); sfree(_ms_wlvi.pszText);}
+#endif
 
 // Never ever use isdigit() or isspace(), etc. on UTF-8 strings!
 // These calls take an int and char is signed so MS compilers will produce an assert error on anything that's > 0x80
@@ -170,6 +186,22 @@ static __inline char* wchar_len_to_utf8(const wchar_t* wstr, int wlen)
 	return str;
 }
 
+
+static __inline DWORD CharUpperBuffU(char* lpString, DWORD len)
+{
+	DWORD ret;
+	wchar_t *wlpString = (wchar_t*)calloc(len, sizeof(wchar_t));
+	if (wlpString == NULL)
+		return 0;
+	utf8_to_wchar_no_alloc(lpString, wlpString, len);
+	ret = CharUpperBuffW(wlpString, len);
+	wchar_to_utf8_no_alloc(wlpString, lpString, len);
+	free(wlpString);
+	return ret;
+}
+
+
+#ifdef _WIN32
 static __inline DWORD FormatMessageU(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId,
 									 DWORD dwLanguageId, char* lpBuffer, DWORD nSize, va_list *Arguments)
 {
@@ -480,18 +512,9 @@ static __inline int ComboBox_GetLBTextU(HWND hCtrl, int index, char* lpString)
 	return size;
 }
 
-static __inline DWORD CharUpperBuffU(char* lpString, DWORD len)
-{
-	DWORD ret;
-	wchar_t *wlpString = (wchar_t*)calloc(len, sizeof(wchar_t));
-	if (wlpString == NULL)
-		return 0;
-	utf8_to_wchar_no_alloc(lpString, wlpString, len);
-	ret = CharUpperBuffW(wlpString, len);
-	wchar_to_utf8_no_alloc(wlpString, lpString, len);
-	free(wlpString);
-	return ret;
-}
+
+// TODO: NEED TO BE DONE IN LINUX
+
 
 static __inline HANDLE CreateFileU(const char* lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
 								   LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition,
@@ -1134,6 +1157,7 @@ out:
 	return ret;
 }
 
+
 static __inline int _chdirU(const char *dirname)
 {
 	int ret;
@@ -1414,6 +1438,10 @@ static __inline BOOL GetVolumeInformationU(LPCSTR lpRootPathName, LPSTR lpVolume
 	return ret;
 }
 
+#endif
+
+
 #ifdef __cplusplus
 }
 #endif
+
