@@ -1,5 +1,18 @@
 /* config.h for libcdio (used by both MinGW and MSVC) */
 
+
+#ifdef __linux__
+/* Not actually sure what any of this means, just need it */
+#define HAVE_SETENV 1
+#define HAVE_UNSETENV 1
+#define HAVE_TIMEGM 1
+#define HAVE_GMTIME_R 1
+#define HAVE_LOCALTIME_R 1
+#define HAVE_S_ISLNK 1
+#define HAVE_S_ISSOCK 1
+#endif
+
+
 #if defined(_MSC_VER)
 /* Disable: warning C4996: The POSIX name for this item is deprecated. */
 #pragma warning(disable:4996)
@@ -50,6 +63,11 @@
 
 /* Define if you have the iconv() function and it works. */
 /* #undef HAVE_ICONV */
+#ifdef __linux__
+#define HAVE_ICONV 1
+#define ICONV_CONST
+#endif
+
 
 /* Define this if you want to use the 2020 version of the libcdio API. */
 #define DO_NOT_WANT_COMPATIBILITY /**/
@@ -197,11 +215,14 @@
 /* Define 1 if you have MinGW CD-ROM support */
 /* #undef HAVE_WIN32_CDROM */
 
+#ifdef _WIN32
 /* Define to 1 if you have the <windows.h> header file. */
 #define HAVE_WINDOWS_H 1
 
 /* Define to 1 if you have the `_stati64' function. */
 #define HAVE__STATI64 1
+#endif
+
 
 /* Define as const if the declaration of iconv() needs const. */
 /* #undef ICONV_CONST  */

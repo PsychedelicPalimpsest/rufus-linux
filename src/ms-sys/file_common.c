@@ -34,17 +34,6 @@
 #include "file.h"
 
 
-#ifdef _WIN32
-#define _a_malloc(SIZE, ALLIGN) _mm_malloc((SIZE), (ALLIGN))
-#define _a_free(PTR) _mm_free((PTR))
-
-#else
-
-#define _a_malloc(SIZE, ALLIGN) aligned_alloc((ALLIGN), (SIZE))
-#define _a_free(PTR) free((PTR))
-#endif
-
-
 extern unsigned long ulBytesPerSector;
 
 /*
@@ -57,7 +46,7 @@ int contains_data(FILE *fp, uint64_t Position,
 	const void *pData, uint64_t Len)
 {
    int r = 0;
-   unsigned char *aucBuf = _a_malloc(MAX_DATA_LEN, 16);
+   unsigned char *aucBuf = _mm_malloc(MAX_DATA_LEN, 16);
 
    if(aucBuf == NULL)
       return 0;
@@ -71,7 +60,7 @@ int contains_data(FILE *fp, uint64_t Position,
    r = 1;
 
 out:
-   _a_free(aucBuf);
+   _mm_free(aucBuf);
    return r;
 } /* contains_data */
 
@@ -79,7 +68,7 @@ int read_data(FILE *fp, uint64_t Position,
               void *pData, uint64_t Len)
 {
    int r = 0;
-   unsigned char *aucBuf = _a_malloc(MAX_DATA_LEN, 16);
+   unsigned char *aucBuf = _mm_malloc(MAX_DATA_LEN, 16);
 
    #ifdef _WIN32
    FAKE_FD* fd = (FAKE_FD*)fp;
@@ -125,7 +114,7 @@ int read_data(FILE *fp, uint64_t Position,
    r = 1;
 
 out:
-   _a_free(aucBuf);
+   _mm_free(aucBuf);
    return r;
 }  /* read_data */
 
@@ -135,7 +124,7 @@ int write_data(FILE *fp, uint64_t Position,
 {
    int r = 0;
    /* Windows' WriteFile() may require a buffer that is aligned to the sector size */
-   unsigned char *aucBuf = _a_malloc(MAX_DATA_LEN, 4096);
+   unsigned char *aucBuf = _mm_malloc(MAX_DATA_LEN, 4096);
    
    #ifdef _WIN32
    FAKE_FD* fd = (FAKE_FD*)fp;
@@ -185,7 +174,7 @@ int write_data(FILE *fp, uint64_t Position,
    r = 1;
 
 out:
-   _a_free(aucBuf);
+   _mm_free(aucBuf);
    return r;
 } /* write_data */
 

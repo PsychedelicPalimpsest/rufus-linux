@@ -252,7 +252,8 @@ typedef long            LONG;
 typedef unsigned long   DWORD,      *PDWORD,   *LPDWORD;
 #else
 typedef int             LONG;
-typedef long long LONGLONG;
+typedef long long       LONGLONG;
+typedef unsigned long long  ULONGLONG;
 typedef unsigned int    DWORD,      *PDWORD,   *LPDWORD;
 #endif
 

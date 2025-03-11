@@ -30,6 +30,12 @@
 #define ALIGN_END(m)
 #endif
 
+#ifdef __linux__
+#define _mm_malloc(SIZE, ALLIGN) aligned_alloc((ALLIGN), (SIZE))
+#define _mm_free(PTR) free((PTR))
+#endif
+
+
 ALIGN_START(16) struct libfat_sector {
 	libfat_sector_t n;		/* Sector number */
 	struct libfat_sector *next;	/* Next in list */

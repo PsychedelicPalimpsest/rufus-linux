@@ -9,6 +9,8 @@
 #include <pseudo_windows.h>
 #include <stdint.h>
 
+#define BLED_H
+
 #pragma once
 
 #ifndef ARRAYSIZE

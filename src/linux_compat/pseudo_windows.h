@@ -34,11 +34,19 @@
 #define INVALID_HANDLE_VALUE -1
 typedef int HANDLE;
 
+#include <stdlib.h>
+
+// For some reason libbb break when _mm_malloc is defined
+#ifndef LIBBB_H
+#define _mm_malloc(SIZE_OF, ALLIGN_OF) aligned_alloc(ALLIGN_OF, SIZE_OF)
+#define _mm_free free
+#endif
+
 
 #include "minwindef.h"
 #include "locale.h"
-#include <stdlib.h>
 #include <errno.h>
+#include <assert.h>
 #include <inttypes.h>
 
 #define _snprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)

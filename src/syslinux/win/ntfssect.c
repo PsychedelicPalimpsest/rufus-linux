@@ -18,7 +18,7 @@
  * With special thanks to Mark Roddy for his article:
  *   http://www.wd-3.com/archive/luserland.htm
  */
-
+#ifdef _WIN32
 #include <pseudo_windows.h>
 #include <winioctl.h>
 #include <stddef.h>
@@ -358,3 +358,4 @@ VOID M_NTFSSECT_API NtfsSectUnloadXpFuncs(S_NTFSSECT_XPFUNCS * XpFuncs) {
     return;
   }
 
+#endif /* _WIN32 */

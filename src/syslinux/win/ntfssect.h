@@ -11,6 +11,9 @@
  * ------------------------------------------------------------------------- */
 #ifndef M_NTFSSECT_H_
 
+// TODO: Might need to give some form of equivlent for linux...
+#ifdef _WIN32
+
 /****
  * ntfssect.h
  *
@@ -150,3 +153,4 @@ struct S_NTFSSECT_XPFUNCS_ {
   };
 
 #endif /* M_NTFSSECT_H_ */
+#endif /* _WIN32 */
