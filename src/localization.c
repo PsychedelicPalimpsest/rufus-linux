@@ -286,6 +286,7 @@ err:
 	return FALSE;
 }
 
+#ifdef _WIN32
 /*
  * Apply stored localization commands to a specific dialog
  * If hDlg is NULL, apply the commands against an active Window
@@ -342,6 +343,8 @@ void apply_localization(int dlg_id, HWND hDlg)
 		}
 	}
 }
+
+#endif
 
 /*
  * This function should be called when a localized dialog is destroyed
@@ -429,6 +432,8 @@ static void PrintStatusMessage(char* msg) {
 typedef void PRINT_FUNCTION(char*);
 PRINT_FUNCTION *PrintMessage[2] = { PrintInfoMessage, PrintStatusMessage };
 
+
+#ifdef _WIN32
 /*
  * The following timer call is used, along with MAX_REFRESH, to prevent obnoxious flicker
  * on the Info and Status fields due to messages being updated too quickly.
@@ -443,6 +448,7 @@ static void CALLBACK OutputMessageTimeout(HWND hWnd, UINT uMsg, UINT_PTR idEvent
 	PrintMessage[i](output_msg[i]);
 	last_msg_time[i] = GetTickCount64();
 }
+#endif
 
 static void OutputMessage(BOOL info, char* msg)
 {
@@ -466,7 +472,7 @@ static void OutputMessage(BOOL info, char* msg)
 		}
 	}
 }
-
+#ifdef _WIN32
 static void CALLBACK PrintMessageTimeout(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
 	bStatusTimerArmed = FALSE;
@@ -476,6 +482,7 @@ static void CALLBACK PrintMessageTimeout(HWND hWnd, UINT uMsg, UINT_PTR idEvent,
 	OutputMessage((idEvent == TID_MESSAGE_INFO), szMessage[(idEvent == TID_MESSAGE_INFO)?MSG_INFO:MSG_STATUS][MSG_HIGH_PRI]);
 	KillTimer(hMainDialog, idEvent);
 }
+#endif
 
 void PrintStatusInfo(BOOL info, BOOL debug, unsigned int duration, int msg_id, ...)
 {

@@ -1,7 +1,7 @@
 AC_INIT([rufus], [4.7], [https://github.com/pbatard/rufus/issues], [rufus], [https://rufus.ie])
 AM_INIT_AUTOMAKE([foreign no-dist no-dependencies subdir-objects])  # Removed deprecated flags
 
-AC_CONFIG_SRCDIR([src/rufus.c])
+AC_CONFIG_SRCDIR([src/common/rufus.c])
 AC_CONFIG_MACRO_DIR([m4])
 AM_SILENT_RULES([yes])
 
@@ -77,8 +77,25 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([.mingw/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/bled/Makefile])
-AC_CONFIG_FILES([src/linux_compat/Makefile])
-AC_CONFIG_FILES([src/windows_specific/Makefile])
+AC_CONFIG_FILES([src/common/Makefile])
+
+
+AC_CANONICAL_HOST
+AC_MSG_NOTICE([Detected host: $host])
+AC_MSG_NOTICE([Detected host_os: $host_os])
+# Certain things just need special treatment
+case "$host_os" in
+  *linux*)
+    AC_CONFIG_FILES([src/linux_specific/Makefile])
+    AM_CONDITIONAL([BUILD_LINUX], [true])
+    AM_CONDITIONAL([BUILD_WINDOWS], [false])
+    ;;
+  *mingw* | *cygwin*)
+    AM_CONDITIONAL([BUILD_LINUX], [false])
+    AM_CONDITIONAL([BUILD_WINDOWS], [true])
+    AC_CONFIG_FILES([src/windows_specific/Makefile])
+    ;;
+esac
 AC_CONFIG_FILES([src/ext2fs/Makefile])
 AC_CONFIG_FILES([src/libcdio/iso9660/Makefile])
 AC_CONFIG_FILES([src/libcdio/udf/Makefile])

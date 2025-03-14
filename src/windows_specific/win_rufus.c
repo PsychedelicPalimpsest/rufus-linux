@@ -16,16 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef _WIN32
-
-
 /* Memory leaks detection - define _CRTDBG_MAP_ALLOC as preprocessor macro */
 #ifdef _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
 #endif
 
-#include <pseudo_windows.h>
+#include "pseudo_windows.h"
 #include <windowsx.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -4188,6 +4185,3 @@ out:
 	return 0;
 }
 
-
-
-#endif /* _WIN32 */

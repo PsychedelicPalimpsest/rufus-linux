@@ -518,8 +518,6 @@ extern void _UpdateProgressWithInfo(int op, int msg, uint64_t processed, uint64_
 extern const char* StrError(DWORD error_code, BOOL use_default_locale);
 extern char* GuidToString(const GUID* guid, BOOL bDecorated);
 extern GUID* StringToGuid(const char* str);
-extern char* SizeToHumanReadable(uint64_t size, BOOL copy_to_log, BOOL fake_units);
-extern char* TimestampToHumanReadable(uint64_t ts);
 extern HWND MyCreateDialog(HINSTANCE hInstance, int Dialog_ID, HWND hWndParent, DLGPROC lpDialogFunc);
 extern INT_PTR MyDialogBox(HINSTANCE hInstance, int Dialog_ID, HWND hWndParent, DLGPROC lpDialogFunc);
 extern void CenterDialog(HWND hDlg, HWND hParent);
@@ -690,41 +688,3 @@ out:
 	free(wszLibraryName);
 	return h;
 }
-#define PF_TYPE(api, ret, proc, args)		typedef ret (api *proc##_t)args
-#define PF_DECL(proc)						static proc##_t pf##proc = NULL
-#define PF_TYPE_DECL(api, ret, proc, args)	PF_TYPE(api, ret, proc, args); PF_DECL(proc)
-#define PF_INIT(proc, name)					if (pf##proc == NULL) pf##proc = \
-	(proc##_t) GetProcAddress(GetLibraryHandle(#name), #proc)
-#define PF_INIT_OR_OUT(proc, name)			do {PF_INIT(proc, name);         \
-	if (pf##proc == NULL) {uprintf("Unable to locate %s() in '%s.dll': %s",  \
-	#proc, #name, WindowsErrorString()); goto out;} } while(0)
-#define PF_INIT_OR_SET_STATUS(proc, name)	do {PF_INIT(proc, name);         \
-	if ((pf##proc == NULL) && (NT_SUCCESS(status))) status = STATUS_PROCEDURE_NOT_FOUND; } while(0)
-#if defined(_MSC_VER)
-#define TRY_AND_HANDLE(exception, TRY_CODE, EXCEPTION_CODE) __try TRY_CODE   \
-	__except (GetExceptionCode() == exception ? EXCEPTION_EXECUTE_HANDLER :  \
-			  EXCEPTION_CONTINUE_SEARCH) EXCEPTION_CODE
-#else
-// NB: Eventually we may try __try1 and __except1 from MinGW...
-#define TRY_AND_HANDLE(exception, TRY_CODE, EXCEPTION_CODE) TRY_CODE
-#endif
-
-/* Custom application errors */
-#define FAC(f)                         ((f)<<16)
-#define APPERR(err)                    (APPLICATION_ERROR_MASK|(err))
-#define ERROR_INCOMPATIBLE_FS          0x1201
-#define ERROR_CANT_QUICK_FORMAT        0x1202
-#define ERROR_INVALID_CLUSTER_SIZE     0x1203
-#define ERROR_INVALID_VOLUME_SIZE      0x1204
-#define ERROR_CANT_START_THREAD        0x1205
-#define ERROR_BADBLOCKS_FAILURE        0x1206
-#define ERROR_ISO_SCAN                 0x1207
-#define ERROR_ISO_EXTRACT              0x1208
-#define ERROR_CANT_REMOUNT_VOLUME      0x1209
-#define ERROR_CANT_PATCH               0x120A
-#define ERROR_CANT_ASSIGN_LETTER       0x120B
-#define ERROR_CANT_MOUNT_VOLUME        0x120C
-#define ERROR_BAD_SIGNATURE            0x120D
-#define ERROR_CANT_DOWNLOAD            0x120E
-
-#define RUFUS_ERROR(err)               (ERROR_SEVERITY_ERROR | FAC(FACILITY_STORAGE) | (err))

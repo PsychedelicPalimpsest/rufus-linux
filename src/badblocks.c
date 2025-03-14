@@ -304,6 +304,8 @@ static void print_status(void)
 
 	percent = calc_percent((unsigned long) currently_testing,
 					(unsigned long) num_blocks);
+	// TODO: This all is NOT LINUX COMPATIBLE
+	#ifdef _WIN32
 	PrintInfo(0, MSG_235, lmprintf(MSG_191 + ((cur_op==OP_WRITE)?0:1)),
 				cur_pattern, nr_pattern,
 				percent,
@@ -312,8 +314,10 @@ static void print_status(void)
 				num_corruption_errors);
 	percent = (percent/2.0f) + ((cur_op==OP_READ)? 50.0f : 0.0f);
 	UpdateProgress(OP_BADBLOCKS, (((cur_pattern-1)*100.0f) + percent) / nr_pattern);
+	#endif
 }
 
+#ifdef _WIN32
 static void CALLBACK alarm_intr(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
 	if (!num_blocks)
@@ -325,6 +329,7 @@ static void CALLBACK alarm_intr(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dw
 	}
 	print_status();
 }
+#endif
 
 static void pattern_fill(unsigned char *buffer, unsigned int pattern,
 			 size_t n)
@@ -333,14 +338,19 @@ static void pattern_fill(unsigned char *buffer, unsigned int pattern,
 	unsigned char	bpattern[sizeof(pattern)], *ptr;
 
 	if (pattern == (unsigned int) ~0) {
+		#ifdef _WIN32
 		PrintInfo(3500, MSG_236);
+		#endif
 		srand((unsigned int)GetTickCount64());
 		for (ptr = buffer; ptr < buffer + n; ptr++) {
 			// coverity[dont_call]
 			(*ptr) = rand() % (1 << (8 * sizeof(char)));
 		}
 	} else {
+		#ifdef _WIN32
 		PrintInfo(3500, MSG_237, pattern);
+		#endif
+
 		bpattern[0] = 0;
 		for (i = 0; i < sizeof(bpattern); i++) {
 			if (pattern == 0)
@@ -591,9 +601,17 @@ BOOL BadBlocks(HANDLE hPhysicalDrive, ULONGLONG disk_size, int nb_passes,
 
 	cancel_ops = 0;
 	/* use a timer to update status every second */
+
+	// TODO: Find a linux alternative
+	#ifdef _WIN32
 	SetTimer(hMainDialog, TID_BADBLOCKS_UPDATE, 1000, alarm_intr);
+	#endif
+
 	report->bb_count = test_rw(hPhysicalDrive, last_block, BADBLOCK_BLOCK_SIZE, 0, BB_BLOCKS_AT_ONCE, flash_type, nb_passes);
+
+	#ifdef _WIN32
 	KillTimer(hMainDialog, TID_BADBLOCKS_UPDATE);
+	#endif
 	free(bb_list->list);
 	free(bb_list);
 	report->num_read_errors = num_read_errors;

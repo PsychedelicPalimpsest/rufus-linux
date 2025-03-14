@@ -139,11 +139,13 @@ typedef struct loc_control_id_struct {
 	const int id;
 } loc_control_id;
 
+#ifdef _WIN32
 typedef struct loc_dlg_list_struct {
 	const int dlg_id;
 	HWND hDlg;
 	struct list_head list;
 } loc_dlg_list;
+#endif
 
 extern const loc_parse parse_cmd[7];
 extern struct list_head locale_list;
@@ -159,8 +161,6 @@ void _exit_localization(BOOL reinit);
 #define init_localization() _init_localization(FALSE)
 #define exit_localization() _exit_localization(FALSE)
 #define reinit_localization() do {_exit_localization(TRUE); _init_localization(TRUE);} while(0)
-void apply_localization(int dlg_id, HWND hDlg);
-void reset_localization(int dlg_id);
 void free_dialog_list(void);
 char* lmprintf(uint32_t msg_id, ...);
 BOOL get_supported_locales(const char* filename);
@@ -171,3 +171,8 @@ loc_cmd* get_locale_from_name(char* locale_name, BOOL fallback);
 void toggle_default_locale(void);
 const char* get_name_from_id(int id);
 WORD get_language_id(loc_cmd* lcmd);
+
+#ifdef _WIN32
+void apply_localization(int dlg_id, HWND hDlg);
+void reset_localization(int dlg_id);
+#endif

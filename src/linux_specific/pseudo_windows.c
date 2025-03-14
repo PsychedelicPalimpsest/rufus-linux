@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef _WIN32
+// Found in the common/ dir
 #include "pseudo_windows.h"
 #include <wctype.h>
-
 
 
 // This can and should be done better,
@@ -33,5 +31,12 @@ DWORD CharUpperBuffW(WCHAR *str, DWORD len)
     }
     return len;
 }
+#include <time.h>
 
-#endif
+
+ULONGLONG GetTickCount64(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (ULONGLONG)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
+}
+

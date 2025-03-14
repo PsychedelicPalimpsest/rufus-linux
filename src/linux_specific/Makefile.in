@@ -76,7 +76,9 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-subdir = src/linux_compat
+build_triplet = @build@
+host_triplet = @host@
+subdir = src/linux_specific
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -91,11 +93,12 @@ AM_V_AR = $(am__v_AR_@AM_V@)
 am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
 am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
-liblinux_compat_a_AR = $(AR) $(ARFLAGS)
-liblinux_compat_a_LIBADD =
-am_liblinux_compat_a_OBJECTS =  \
-	liblinux_compat_a-pseudo_windows.$(OBJEXT)
-liblinux_compat_a_OBJECTS = $(am_liblinux_compat_a_OBJECTS)
+liblinux_specific_a_AR = $(AR) $(ARFLAGS)
+liblinux_specific_a_LIBADD =
+am_liblinux_specific_a_OBJECTS =  \
+	liblinux_specific_a-pseudo_windows.$(OBJEXT) \
+	liblinux_specific_a-locale.$(OBJEXT)
+liblinux_specific_a_OBJECTS = $(am_liblinux_specific_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -127,7 +130,7 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(liblinux_compat_a_SOURCES)
+SOURCES = $(liblinux_specific_a_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -211,14 +214,22 @@ am__leading_dot = @am__leading_dot@
 am__tar = @am__tar@
 am__untar = @am__untar@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
@@ -243,9 +254,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = liblinux_compat.a
-liblinux_compat_a_SOURCES = pseudo_windows.c locale.h
-liblinux_compat_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -Wno-undef -Wno-strict-aliasing -Wno-shadow
+noinst_LIBRARIES = liblinux_specific.a
+liblinux_specific_a_SOURCES = pseudo_windows.c locale.c
+liblinux_specific_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../common -Wno-undef -Wno-strict-aliasing -Wno-shadow
 all: all-am
 
 .SUFFIXES:
@@ -259,9 +270,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign --ignore-deps src/linux_compat/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign --ignore-deps src/linux_specific/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign --ignore-deps src/linux_compat/Makefile
+	  $(AUTOMAKE) --foreign --ignore-deps src/linux_specific/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -284,10 +295,10 @@ $(am__aclocal_m4_deps):
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
-liblinux_compat.a: $(liblinux_compat_a_OBJECTS) $(liblinux_compat_a_DEPENDENCIES) $(EXTRA_liblinux_compat_a_DEPENDENCIES) 
-	$(AM_V_at)-rm -f liblinux_compat.a
-	$(AM_V_AR)$(liblinux_compat_a_AR) liblinux_compat.a $(liblinux_compat_a_OBJECTS) $(liblinux_compat_a_LIBADD)
-	$(AM_V_at)$(RANLIB) liblinux_compat.a
+liblinux_specific.a: $(liblinux_specific_a_OBJECTS) $(liblinux_specific_a_DEPENDENCIES) $(EXTRA_liblinux_specific_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f liblinux_specific.a
+	$(AM_V_AR)$(liblinux_specific_a_AR) liblinux_specific.a $(liblinux_specific_a_OBJECTS) $(liblinux_specific_a_LIBADD)
+	$(AM_V_at)$(RANLIB) liblinux_specific.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -301,11 +312,17 @@ distclean-compile:
 .c.obj:
 	$(AM_V_CC)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-liblinux_compat_a-pseudo_windows.o: pseudo_windows.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_compat_a_CFLAGS) $(CFLAGS) -c -o liblinux_compat_a-pseudo_windows.o `test -f 'pseudo_windows.c' || echo '$(srcdir)/'`pseudo_windows.c
+liblinux_specific_a-pseudo_windows.o: pseudo_windows.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-pseudo_windows.o `test -f 'pseudo_windows.c' || echo '$(srcdir)/'`pseudo_windows.c
 
-liblinux_compat_a-pseudo_windows.obj: pseudo_windows.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_compat_a_CFLAGS) $(CFLAGS) -c -o liblinux_compat_a-pseudo_windows.obj `if test -f 'pseudo_windows.c'; then $(CYGPATH_W) 'pseudo_windows.c'; else $(CYGPATH_W) '$(srcdir)/pseudo_windows.c'; fi`
+liblinux_specific_a-pseudo_windows.obj: pseudo_windows.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-pseudo_windows.obj `if test -f 'pseudo_windows.c'; then $(CYGPATH_W) 'pseudo_windows.c'; else $(CYGPATH_W) '$(srcdir)/pseudo_windows.c'; fi`
+
+liblinux_specific_a-locale.o: locale.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-locale.o `test -f 'locale.c' || echo '$(srcdir)/'`locale.c
+
+liblinux_specific_a-locale.obj: locale.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-locale.obj `if test -f 'locale.c'; then $(CYGPATH_W) 'locale.c'; else $(CYGPATH_W) '$(srcdir)/locale.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

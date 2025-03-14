@@ -76,6 +76,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = @build@
+host_triplet = @host@
 subdir = src/windows_specific
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -94,7 +96,9 @@ am__v_AR_1 =
 libwindows_specific_a_AR = $(AR) $(ARFLAGS)
 libwindows_specific_a_LIBADD =
 am_libwindows_specific_a_OBJECTS =  \
-	libwindows_specific_a-win_rufus.$(OBJEXT)
+	libwindows_specific_a-win_rufus.$(OBJEXT) \
+	libwindows_specific_a-win_ui.$(OBJEXT) \
+	libwindows_specific_a-win_drive.$(OBJEXT)
 libwindows_specific_a_OBJECTS = $(am_libwindows_specific_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -211,14 +215,22 @@ am__leading_dot = @am__leading_dot@
 am__tar = @am__tar@
 am__untar = @am__untar@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
@@ -244,8 +256,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libwindows_specific.a
-libwindows_specific_a_SOURCES = win_rufus.c
-libwindows_specific_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -Wno-undef -Wno-strict-aliasing -Wno-shadow
+libwindows_specific_a_SOURCES = win_rufus.c win_ui.c win_drive.c
+libwindows_specific_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../common -Wno-undef -Wno-strict-aliasing -Wno-shadow
 all: all-am
 
 .SUFFIXES:
@@ -306,6 +318,18 @@ libwindows_specific_a-win_rufus.o: win_rufus.c
 
 libwindows_specific_a-win_rufus.obj: win_rufus.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-win_rufus.obj `if test -f 'win_rufus.c'; then $(CYGPATH_W) 'win_rufus.c'; else $(CYGPATH_W) '$(srcdir)/win_rufus.c'; fi`
+
+libwindows_specific_a-win_ui.o: win_ui.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-win_ui.o `test -f 'win_ui.c' || echo '$(srcdir)/'`win_ui.c
+
+libwindows_specific_a-win_ui.obj: win_ui.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-win_ui.obj `if test -f 'win_ui.c'; then $(CYGPATH_W) 'win_ui.c'; else $(CYGPATH_W) '$(srcdir)/win_ui.c'; fi`
+
+libwindows_specific_a-win_drive.o: win_drive.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-win_drive.o `test -f 'win_drive.c' || echo '$(srcdir)/'`win_drive.c
+
+libwindows_specific_a-win_drive.obj: win_drive.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-win_drive.obj `if test -f 'win_drive.c'; then $(CYGPATH_W) 'win_drive.c'; else $(CYGPATH_W) '$(srcdir)/win_drive.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

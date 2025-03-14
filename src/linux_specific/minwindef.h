@@ -1,5 +1,5 @@
 /*
- * Basic types definitions. Copied from Wine, added a few things, then stripped down to just include the basics.
+ * Basic types definitions. Copied from Wine, added a few things, then stripped down to just include the basics. This file is only needed for linux builds
  *
  * Copyright 1996 Alexandre Julliard
  * Copyright 2025 PsychedelicPalimpsest
@@ -245,6 +245,7 @@ typedef unsigned char   BYTE,       *PBYTE,    *LPBYTE;
 typedef unsigned short  WORD,       *PWORD,    *LPWORD;
 typedef int             INT,        *PINT,     *LPINT;
 typedef unsigned int    UINT,       *PUINT;
+typedef UINT*           UINT_PTR;
 typedef float           FLOAT,      *PFLOAT;
 typedef char            *PSZ;
 #if !defined(__LP64__) && !defined(WINE_NO_LONG_TYPES)

@@ -609,11 +609,23 @@ PACKAGE_STRING='rufus 4.7'
 PACKAGE_BUGREPORT='https://github.com/pbatard/rufus/issues'
 PACKAGE_URL='https://rufus.ie'
 
-ac_unique_file="src/rufus.c"
+ac_unique_file="src/common/rufus.c"
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+BUILD_WINDOWS_FALSE
+BUILD_WINDOWS_TRUE
+BUILD_LINUX_FALSE
+BUILD_LINUX_TRUE
+host_os
+host_vendor
+host_cpu
+host
+build_os
+build_vendor
+build_cpu
+build
 SUFFIX
 AM_LDFLAGS
 AM_CFLAGS
@@ -1324,6 +1336,10 @@ Program names:
   --program-prefix=PREFIX            prepend PREFIX to installed program names
   --program-suffix=SUFFIX            append SUFFIX to installed program names
   --program-transform-name=PROGRAM   run sed PROGRAM on installed program names
+
+System types:
+  --build=BUILD     configure for building on BUILD [guessed]
+  --host=HOST       cross-compile to build programs to run on HOST [BUILD]
 _ACEOF
 fi
 
@@ -2096,7 +2112,7 @@ main (int argc, char **argv)
 
 
 # Auxiliary files required by this configure script.
-ac_aux_files="compile missing install-sh"
+ac_aux_files="config.guess config.sub compile missing install-sh"
 
 # Locations in which to look for auxiliary files.
 ac_aux_dir_candidates="${srcdir}${PATH_SEPARATOR}${srcdir}/..${PATH_SEPARATOR}${srcdir}/../.."
@@ -4811,10 +4827,118 @@ ac_config_files="$ac_config_files src/Makefile"
 
 ac_config_files="$ac_config_files src/bled/Makefile"
 
-ac_config_files="$ac_config_files src/linux_compat/Makefile"
+ac_config_files="$ac_config_files src/common/Makefile"
 
-ac_config_files="$ac_config_files src/windows_specific/Makefile"
 
+
+
+
+  # Make sure we can run config.sub.
+$SHELL "${ac_aux_dir}config.sub" sun4 >/dev/null 2>&1 ||
+  as_fn_error $? "cannot run $SHELL ${ac_aux_dir}config.sub" "$LINENO" 5
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking build system type" >&5
+printf %s "checking build system type... " >&6; }
+if test ${ac_cv_build+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) ac_build_alias=$build_alias
+test "x$ac_build_alias" = x &&
+  ac_build_alias=`$SHELL "${ac_aux_dir}config.guess"`
+test "x$ac_build_alias" = x &&
+  as_fn_error $? "cannot guess build type; you must specify one" "$LINENO" 5
+ac_cv_build=`$SHELL "${ac_aux_dir}config.sub" $ac_build_alias` ||
+  as_fn_error $? "$SHELL ${ac_aux_dir}config.sub $ac_build_alias failed" "$LINENO" 5
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_build" >&5
+printf "%s\n" "$ac_cv_build" >&6; }
+case $ac_cv_build in
+*-*-*) ;;
+*) as_fn_error $? "invalid value of canonical build" "$LINENO" 5;;
+esac
+build=$ac_cv_build
+ac_save_IFS=$IFS; IFS='-'
+set x $ac_cv_build
+shift
+build_cpu=$1
+build_vendor=$2
+shift; shift
+# Remember, the first character of IFS is used to create $*,
+# except with old shells:
+build_os=$*
+IFS=$ac_save_IFS
+case $build_os in *\ *) build_os=`echo "$build_os" | sed 's/ /-/g'`;; esac
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking host system type" >&5
+printf %s "checking host system type... " >&6; }
+if test ${ac_cv_host+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if test "x$host_alias" = x; then
+  ac_cv_host=$ac_cv_build
+else
+  ac_cv_host=`$SHELL "${ac_aux_dir}config.sub" $host_alias` ||
+    as_fn_error $? "$SHELL ${ac_aux_dir}config.sub $host_alias failed" "$LINENO" 5
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_host" >&5
+printf "%s\n" "$ac_cv_host" >&6; }
+case $ac_cv_host in
+*-*-*) ;;
+*) as_fn_error $? "invalid value of canonical host" "$LINENO" 5;;
+esac
+host=$ac_cv_host
+ac_save_IFS=$IFS; IFS='-'
+set x $ac_cv_host
+shift
+host_cpu=$1
+host_vendor=$2
+shift; shift
+# Remember, the first character of IFS is used to create $*,
+# except with old shells:
+host_os=$*
+IFS=$ac_save_IFS
+case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: Detected host: $host" >&5
+printf "%s\n" "$as_me: Detected host: $host" >&6;}
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: Detected host_os: $host_os" >&5
+printf "%s\n" "$as_me: Detected host_os: $host_os" >&6;}
+# Certain things just need special treatment
+case "$host_os" in
+  *linux*)
+    ac_config_files="$ac_config_files src/linux_specific/Makefile"
+
+     if true; then
+  BUILD_LINUX_TRUE=
+  BUILD_LINUX_FALSE='#'
+else
+  BUILD_LINUX_TRUE='#'
+  BUILD_LINUX_FALSE=
+fi
+
+    ;;
+  *mingw* | *cygwin*)
+     if true; then
+  BUILD_WINDOWS_TRUE=
+  BUILD_WINDOWS_FALSE='#'
+else
+  BUILD_WINDOWS_TRUE='#'
+  BUILD_WINDOWS_FALSE=
+fi
+
+    ac_config_files="$ac_config_files src/windows_specific/Makefile"
+
+    ;;
+esac
 ac_config_files="$ac_config_files src/ext2fs/Makefile"
 
 ac_config_files="$ac_config_files src/libcdio/iso9660/Makefile"
@@ -4992,6 +5116,14 @@ else
   am__EXEEXT_FALSE=
 fi
 
+if test -z "${BUILD_LINUX_TRUE}" && test -z "${BUILD_LINUX_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_LINUX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_WINDOWS_TRUE}" && test -z "${BUILD_WINDOWS_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_WINDOWS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 
 : "${CONFIG_STATUS=./config.status}"
 ac_write_fail=0
@@ -5558,7 +5690,8 @@ do
     ".mingw/Makefile") CONFIG_FILES="$CONFIG_FILES .mingw/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/bled/Makefile") CONFIG_FILES="$CONFIG_FILES src/bled/Makefile" ;;
-    "src/linux_compat/Makefile") CONFIG_FILES="$CONFIG_FILES src/linux_compat/Makefile" ;;
+    "src/common/Makefile") CONFIG_FILES="$CONFIG_FILES src/common/Makefile" ;;
+    "src/linux_specific/Makefile") CONFIG_FILES="$CONFIG_FILES src/linux_specific/Makefile" ;;
     "src/windows_specific/Makefile") CONFIG_FILES="$CONFIG_FILES src/windows_specific/Makefile" ;;
     "src/ext2fs/Makefile") CONFIG_FILES="$CONFIG_FILES src/ext2fs/Makefile" ;;
     "src/libcdio/iso9660/Makefile") CONFIG_FILES="$CONFIG_FILES src/libcdio/iso9660/Makefile" ;;

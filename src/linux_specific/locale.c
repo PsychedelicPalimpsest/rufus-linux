@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef _WIN32
 #include "locale.h"
 
 // Todo: MultiByteToWideChar, WideCharToMultiByte
 // via CP_UTF8
 
 
-
-#endif

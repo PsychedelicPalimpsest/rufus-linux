@@ -18,6 +18,7 @@
 
 
 #ifndef _WIN32
+#include "pseudo_windows.h"
 
 INT MultiByteToWideChar( UINT codepage, DWORD flags, const char *src, INT srclen,
                                                   WCHAR *dst, INT dstlen );

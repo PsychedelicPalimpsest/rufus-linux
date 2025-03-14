@@ -27,7 +27,7 @@
 
 /**
  * I know this is not one to one, but just working
- * with raw unix fileids and pretending they are
+ * with raw unix file ids and pretending they are
  * Windows HANDLEs will work well enough for Rufus
  */
 
@@ -43,14 +43,20 @@ typedef int HANDLE;
 #endif
 
 
-#include "minwindef.h"
-#include "locale.h"
+#include "../linux_specific/minwindef.h"
+#include "../linux_specific/locale.h"
 #include <errno.h>
 #include <assert.h>
 #include <inttypes.h>
+#include <string.h>
+
+
+
+
+
 
 #define _snprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)
-DWORD CharUpperBuffW(WCHAR *str, DWORD len);
+
 
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -122,7 +128,20 @@ static __inline int _sopen_s(int *pfh, const char *filename, int flags, int shar
     *pfh = fd;
     return 0;
 }
+/* Error Masks */
+#define APPLICATION_ERROR_MASK       0x20000000
+#define ERROR_SEVERITY_SUCCESS       0x00000000
+#define ERROR_SEVERITY_INFORMATIONAL 0x40000000
+#define ERROR_SEVERITY_WARNING       0x80000000
+#define ERROR_SEVERITY_ERROR         0xC0000000
+
+#include "../linux_specific/winerror.h"
 
 
+
+
+
+DWORD CharUpperBuffW(WCHAR *str, DWORD len);
+ULONGLONG GetTickCount64(void);
 
 #endif

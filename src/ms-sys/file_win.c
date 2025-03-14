@@ -20,7 +20,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#include "../rufus.h"
+#include "rufus.h"
 #include "file.h"
 
 #ifdef _WIN32
