@@ -45,10 +45,9 @@ typedef int HANDLE;
 #define _mm_free free
 #endif
 
-
-#include "../linux_specific/minwindef.h"
-#include "../linux_specific/locale.h"
 #include "../linux_specific/mini_winnt.h"
+#include "../linux_specific/locale.h"
+
 #include <errno.h>
 #include <assert.h>
 #include <inttypes.h>
@@ -64,10 +63,6 @@ typedef int HANDLE;
 #include <sys/stat.h>
 #include <fcntl.h>
 
-// Allow the underscore FS functions
-#define _openU open
-#define _mkdirU mkdir
-#define _unlink unlink
 #define _chmod chmod
 /** The following is my best attempt to Emulate the windows file parameters.
  *  Unfortinatly I can not emulate them all one-to-one
@@ -139,7 +134,7 @@ static __inline int _sopen_s(int *pfh, const char *filename, int flags, int shar
 #define ERROR_SEVERITY_ERROR         0xC0000000
 
 #include "../linux_specific/winerror.h"
-
+#include "../linux_specific/win_fs_functions.h"
 
 
 

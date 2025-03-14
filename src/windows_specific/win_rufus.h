@@ -160,19 +160,6 @@ extern BOOL htab_create(uint32_t nel, htab_table* htab);
 extern void htab_destroy(htab_table* htab);
 extern uint32_t htab_hash(char* str, htab_table* htab);
 
-/* Basic String Array */
-typedef struct {
-	char** String;
-	uint32_t Index;		// Current array size
-	uint32_t Max;		// Maximum array size
-} StrArray;
-#define STRARRAY_EMPTY { NULL, 0, 0 };
-extern void StrArrayCreate(StrArray* arr, uint32_t initial_size);
-extern int32_t StrArrayAdd(StrArray* arr, const char* str, BOOL);
-extern int32_t StrArrayFind(StrArray* arr, const char* str);
-extern void StrArrayClear(StrArray* arr);
-extern void StrArrayDestroy(StrArray* arr);
-#define IsStrArrayEmpty(arr) (arr.Index == 0)
 
 /*
  * Globals
@@ -184,7 +171,6 @@ extern HWND hNBPasses, hLog, hInfo, hProgress;
 extern const int nb_steps[FS_MAX];
 extern float fScale;
 extern windows_version_t WindowsVersion;
-extern sbat_entry_t* sbat_entries;
 extern char ubuffer[UBUFFER_SIZE], embedded_sl_version_str[2][12];
 extern StrArray modified_files;
 extern RUFUS_IMG_REPORT img_report;
