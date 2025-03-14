@@ -78,6 +78,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@BUILD_LINUX_TRUE@am__append_1 = -I$(srcdir)/../linux_specific
+@BUILD_WINDOWS_TRUE@am__append_2 = -I$(srcdir)/../windows_specific
 subdir = src/common
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -95,7 +97,8 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libcommon_a_AR = $(AR) $(ARFLAGS)
 libcommon_a_LIBADD =
-am_libcommon_a_OBJECTS = libcommon_a-rufus.$(OBJEXT)
+am_libcommon_a_OBJECTS = libcommon_a-rufus.$(OBJEXT) \
+	libcommon_a-hash.$(OBJEXT) libcommon_a-stdio.$(OBJEXT)
 libcommon_a_OBJECTS = $(am_libcommon_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -255,8 +258,10 @@ top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libcommon.a
 
 # TODO
-libcommon_a_SOURCES = rufus.c
-libcommon_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -Wno-undef -Wno-strict-aliasing -Wno-shadow
+libcommon_a_SOURCES = rufus.c hash.c stdio.c
+libcommon_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. \
+	-Wno-undef -Wno-strict-aliasing -Wno-shadow $(am__append_1) \
+	$(am__append_2)
 all: all-am
 
 .SUFFIXES:
@@ -317,6 +322,18 @@ libcommon_a-rufus.o: rufus.c
 
 libcommon_a-rufus.obj: rufus.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-rufus.obj `if test -f 'rufus.c'; then $(CYGPATH_W) 'rufus.c'; else $(CYGPATH_W) '$(srcdir)/rufus.c'; fi`
+
+libcommon_a-hash.o: hash.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-hash.o `test -f 'hash.c' || echo '$(srcdir)/'`hash.c
+
+libcommon_a-hash.obj: hash.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-hash.obj `if test -f 'hash.c'; then $(CYGPATH_W) 'hash.c'; else $(CYGPATH_W) '$(srcdir)/hash.c'; fi`
+
+libcommon_a-stdio.o: stdio.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-stdio.o `test -f 'stdio.c' || echo '$(srcdir)/'`stdio.c
+
+libcommon_a-stdio.obj: stdio.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-stdio.obj `if test -f 'stdio.c'; then $(CYGPATH_W) 'stdio.c'; else $(CYGPATH_W) '$(srcdir)/stdio.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

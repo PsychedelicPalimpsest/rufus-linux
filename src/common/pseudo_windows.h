@@ -24,6 +24,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
+#include <stddef.h>
 
 /**
  * I know this is not one to one, but just working
@@ -31,7 +32,9 @@
  * Windows HANDLEs will work well enough for Rufus
  */
 
-#define INVALID_HANDLE_VALUE -1
+
+
+#define INVALID_HANDLE_VALUE ((int) -1)
 typedef int HANDLE;
 
 #include <stdlib.h>
@@ -45,14 +48,14 @@ typedef int HANDLE;
 
 #include "../linux_specific/minwindef.h"
 #include "../linux_specific/locale.h"
+#include "../linux_specific/mini_winnt.h"
 #include <errno.h>
 #include <assert.h>
 #include <inttypes.h>
 #include <string.h>
 
-
-
-
+// Is this a close enough aproximation?
+#define WindowsErrorString() strerror(errno)
 
 
 #define _snprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)

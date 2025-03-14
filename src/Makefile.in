@@ -81,8 +81,10 @@ host_triplet = @host@
 @BUILD_LINUX_TRUE@am__append_1 = linux_specific
 @BUILD_WINDOWS_TRUE@am__append_2 = windows_specific
 noinst_PROGRAMS = rufus$(EXEEXT)
-@BUILD_LINUX_TRUE@am__append_3 = linux_specific/liblinux_specific.a
-@BUILD_WINDOWS_TRUE@am__append_4 = windows_specific/libwindows_specific.a
+@BUILD_LINUX_TRUE@am__append_3 = -I$(srcdir)/linux_specific
+@BUILD_WINDOWS_TRUE@am__append_4 = -I$(srcdir)/windows_specific
+@BUILD_LINUX_TRUE@am__append_5 = linux_specific/liblinux_specific.a
+@BUILD_WINDOWS_TRUE@am__append_6 = windows_specific/libwindows_specific.a
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -112,7 +114,7 @@ rufus_DEPENDENCIES = rufus_rc.o common/libcommon.a bled/libbled.a \
 	syslinux/libinstaller/libinstaller.a syslinux/win/libwin.a \
 	libcdio/iso9660/libiso9660.a libcdio/udf/libudf.a \
 	libcdio/driver/libdriver.a $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__append_3) $(am__append_4)
+	$(am__DEPENDENCIES_1) $(am__append_5) $(am__append_6)
 rufus_LINK = $(CCLD) $(rufus_CFLAGS) $(CFLAGS) $(rufus_LDFLAGS) \
 	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
@@ -306,16 +308,18 @@ AM_V_WINDRES = $(AM_V_WINDRES_$(V))
 rufus_SOURCES = badblocks.c dev.c dos.c dos_locale.c drive.c format.c format_ext.c format_fat32.c hash.c icon.c iso.c \
 	localization.c net.c parser.c pki.c process.c re.c smart.c stdfn.c stdio.c stdlg.c syslinux.c ui.c vhd.c wue.c
 
-rufus_CFLAGS = -I$(srcdir)/ms-sys/inc -I$(srcdir)/syslinux/libfat -I$(srcdir)/syslinux/libinstaller -I$(srcdir)/syslinux/win -I$(srcdir)/libcdio $(AM_CFLAGS) \
-	-DEXT2_FLAT_INCLUDES=0 -DSOLUTION=rufus -I$(srcdir)/linux_specific -I$(srcdir)/common
-
+rufus_CFLAGS = -I$(srcdir)/ms-sys/inc -I$(srcdir)/syslinux/libfat \
+	-I$(srcdir)/syslinux/libinstaller -I$(srcdir)/syslinux/win \
+	-I$(srcdir)/libcdio $(AM_CFLAGS) -DEXT2_FLAT_INCLUDES=0 \
+	-DSOLUTION=rufus -I$(srcdir)/common $(am__append_3) \
+	$(am__append_4)
 rufus_LDFLAGS = $(AM_LDFLAGS) -mwindows -L ../.mingw
 rufus_LDADD = rufus_rc.o common/libcommon.a bled/libbled.a \
 	ext2fs/libext2fs.a ms-sys/libmssys.a syslinux/libfat/libfat.a \
 	syslinux/libinstaller/libinstaller.a syslinux/win/libwin.a \
 	libcdio/iso9660/libiso9660.a libcdio/udf/libudf.a \
 	libcdio/driver/libdriver.a $(NONVULNERABLE_LIBS) \
-	$(VULNERABLE_LIBS) $(am__append_3) $(am__append_4)
+	$(VULNERABLE_LIBS) $(am__append_5) $(am__append_6)
 all: all-recursive
 
 .SUFFIXES:

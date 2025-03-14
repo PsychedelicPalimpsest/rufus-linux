@@ -98,7 +98,8 @@ libwindows_specific_a_LIBADD =
 am_libwindows_specific_a_OBJECTS =  \
 	libwindows_specific_a-win_rufus.$(OBJEXT) \
 	libwindows_specific_a-win_ui.$(OBJEXT) \
-	libwindows_specific_a-win_drive.$(OBJEXT)
+	libwindows_specific_a-win_drive.$(OBJEXT) \
+	libwindows_specific_a-winio.$(OBJEXT)
 libwindows_specific_a_OBJECTS = $(am_libwindows_specific_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -256,7 +257,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libwindows_specific.a
-libwindows_specific_a_SOURCES = win_rufus.c win_ui.c win_drive.c
+libwindows_specific_a_SOURCES = win_rufus.c win_ui.c win_drive.c winio.c
 libwindows_specific_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../common -Wno-undef -Wno-strict-aliasing -Wno-shadow
 all: all-am
 
@@ -330,6 +331,12 @@ libwindows_specific_a-win_drive.o: win_drive.c
 
 libwindows_specific_a-win_drive.obj: win_drive.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-win_drive.obj `if test -f 'win_drive.c'; then $(CYGPATH_W) 'win_drive.c'; else $(CYGPATH_W) '$(srcdir)/win_drive.c'; fi`
+
+libwindows_specific_a-winio.o: winio.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-winio.o `test -f 'winio.c' || echo '$(srcdir)/'`winio.c
+
+libwindows_specific_a-winio.obj: winio.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwindows_specific_a_CFLAGS) $(CFLAGS) -c -o libwindows_specific_a-winio.obj `if test -f 'winio.c'; then $(CYGPATH_W) 'winio.c'; else $(CYGPATH_W) '$(srcdir)/winio.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

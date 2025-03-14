@@ -34,57 +34,6 @@
 #define SL_MAJOR(x) ((uint8_t)((x)>>8))
 #define SL_MINOR(x) ((uint8_t)(x))
 
-typedef struct {
-	char* id;
-	char* name;
-	char* display_name;
-	char* label;
-	char* hub;
-	DWORD index;
-	uint32_t port;
-	uint64_t size;
-} RUFUS_DRIVE;
-
-typedef struct {
-	uint16_t version[3];
-	uint32_t platform_min[2];		// minimum platform version required
-	char* download_url;
-	char* release_notes;
-} RUFUS_UPDATE;
-
-typedef struct {
-	DWORD Type;
-	DWORD DeviceNum;
-	DWORD BufSize;
-	LONGLONG DeviceSize;
-	char* DevicePath;
-	char* ImagePath;
-	char* Label;
-} IMG_SAVE;
-
-
-
-
-
-/**
- * Globals
- */
-extern RUFUS_UPDATE update;
-extern WORD selected_langid;
-extern DWORD ErrorStatus, DownloadStatus, MainThreadId, LastWriteError;
-extern BOOL use_own_c32[NB_OLD_C32], detect_fakes, op_in_progress, right_to_left_mode;
-extern BOOL allow_dual_uefi_bios, large_drive, usb_debug;
-extern uint8_t image_options, *pe256ssp;
-extern uint16_t rufus_version[3], embedded_sl_version[2];
-extern uint32_t pe256ssp_size;
-extern uint64_t persistence_size;
-extern int64_t iso_blocking_status;
-extern size_t ubuffer_pos;
-extern int dialog_showing, force_update, fs_type, boot_type, partition_type, target_type;
-extern unsigned long syslinux_ldlinux_len[2];
-extern char szFolderPath[MAX_PATH], app_dir[MAX_PATH], temp_dir[MAX_PATH], system_dir[MAX_PATH];
-extern char sysnative_dir[MAX_PATH], app_data_dir[MAX_PATH], *image_path, *fido_url;
-
 
 
 #if defined(_MSC_VER)
@@ -283,6 +232,9 @@ extern void uprintf(const char *format, ...);
 extern void uprintfs(const char *str);
 extern char* SizeToHumanReadable(uint64_t size, BOOL copy_to_log, BOOL fake_units);
 extern char* TimestampToHumanReadable(uint64_t ts);
+extern uint32_t read_file(const char* path, uint8_t** buf);
+extern uint32_t write_file(const char* path, const uint8_t* buf, const uint32_t size);
+
 
 #define vuprintf(...) do { if (verbose) uprintf(__VA_ARGS__); } while(0)
 #define vvuprintf(...) do { if (verbose > 1) uprintf(__VA_ARGS__); } while(0)
@@ -322,4 +274,368 @@ extern char* TimestampToHumanReadable(uint64_t ts);
 #define ERROR_CANT_DOWNLOAD            0x120E
 
 #define RUFUS_ERROR(err)               (ERROR_SEVERITY_ERROR | FAC(FACILITY_STORAGE) | (err))
+
+
+
+
+
+typedef struct {
+	char* id;
+	char* name;
+	char* display_name;
+	char* label;
+	char* hub;
+	DWORD index;
+	uint32_t port;
+	uint64_t size;
+} RUFUS_DRIVE;
+
+typedef struct {
+	uint16_t version[3];
+	uint32_t platform_min[2];		// minimum platform version required
+	char* download_url;
+	char* release_notes;
+} RUFUS_UPDATE;
+
+typedef struct {
+	DWORD Type;
+	DWORD DeviceNum;
+	DWORD BufSize;
+	LONGLONG DeviceSize;
+	char* DevicePath;
+	char* ImagePath;
+	char* Label;
+} IMG_SAVE;
+enum boot_type {
+	BT_NON_BOOTABLE = 0,
+	BT_MSDOS,
+	BT_FREEDOS,
+	BT_IMAGE,
+	BT_SYSLINUX_V4,		// Start of indexes that only display in advanced mode
+	BT_SYSLINUX_V6,
+	BT_REACTOS,
+	BT_GRUB4DOS,
+	BT_GRUB2,
+	BT_UEFI_NTFS,
+	BT_MAX
+};
+
+enum target_type {
+	TT_BIOS = 0,
+	TT_UEFI,
+	TT_MAX
+};
+// For the partition types we'll use Microsoft's PARTITION_STYLE_### constants
+#define PARTITION_STYLE_SFD PARTITION_STYLE_RAW
+
+enum image_option_type {
+	IMOP_WIN_STANDARD = 0,
+	IMOP_WIN_EXTENDED,
+	IMOP_WIN_TO_GO,
+	IMOP_MAX
+};
+
+enum file_io_type {
+	FILE_IO_READ = 0,
+	FILE_IO_WRITE,
+	FILE_IO_APPEND
+};
+
+enum EFI_BOOT_TYPE {
+	EBT_MAIN = 0,
+	EBT_GRUB,
+	EBT_MOKMANAGER,
+	EBT_BOOTMGR
+};
+
+
+/* ISO details that the application may want */
+#define WINPE_I386          0x0007
+#define WINPE_AMD64         0x0023
+#define WINPE_MININT        0x01C0
+#define SPECIAL_WIM_VERSION 0x000E0000
+#define HAS_KOLIBRIOS(r)    (r.has_kolibrios)
+#define HAS_REACTOS(r)      (r.reactos_path[0] != 0)
+#define HAS_GRUB(r)         ((r.has_grub2) || (r.has_grub4dos))
+#define HAS_SYSLINUX(r)     (r.sl_version != 0)
+#define HAS_BOOTMGR_BIOS(r) (r.has_bootmgr)
+#define HAS_BOOTMGR_EFI(r)  (r.has_bootmgr_efi)
+#define HAS_BOOTMGR(r)      (HAS_BOOTMGR_BIOS(r) || HAS_BOOTMGR_EFI(r))
+#define HAS_REGULAR_EFI(r)  (r.has_efi & 0x7FFE)
+#define HAS_WININST(r)      (r.wininst_index != 0)
+#define HAS_WINPE(r)        (((r.winpe & WINPE_I386) == WINPE_I386)||((r.winpe & WINPE_AMD64) == WINPE_AMD64)||((r.winpe & WINPE_MININT) == WINPE_MININT))
+#define HAS_WINDOWS(r)      (HAS_BOOTMGR(r) || (r.uses_minint) || HAS_WINPE(r))
+#define HAS_WIN7_EFI(r)     ((r.has_efi == 1) && HAS_WININST(r))
+#define IS_WINDOWS_1X(r)    (r.has_bootmgr_efi && (r.win_version.major >= 10))
+#define IS_WINDOWS_11(r)    (r.has_bootmgr_efi && (r.win_version.major >= 11))
+#define HAS_EFI_IMG(r)      (r.efi_img_path[0] != 0)
+#define IS_DD_BOOTABLE(r)   (r.is_bootable_img > 0)
+#define IS_DD_ONLY(r)       ((r.is_bootable_img > 0) && (!r.is_iso || r.disable_iso))
+#define IS_EFI_BOOTABLE(r)  (r.has_efi != 0)
+#define IS_BIOS_BOOTABLE(r) (HAS_BOOTMGR(r) || HAS_SYSLINUX(r) || HAS_WINPE(r) || HAS_GRUB(r) || HAS_REACTOS(r) || HAS_KOLIBRIOS(r))
+#define HAS_WINTOGO(r)      (HAS_BOOTMGR(r) && IS_EFI_BOOTABLE(r) && HAS_WININST(r))
+#define HAS_PERSISTENCE(r)  ((HAS_SYSLINUX(r) || HAS_GRUB(r)) && !(HAS_WINDOWS(r) || HAS_REACTOS(r) || HAS_KOLIBRIOS(r)))
+#define IS_FAT(fs)          ((fs == FS_FAT16) || (fs == FS_FAT32))
+#define IS_EXT(fs)          ((fs >= FS_EXT2) && (fs <= FS_EXT4))
+#define SYMLINKS_RR         0x01
+#define SYMLINKS_UDF        0x02
+
+typedef struct {
+	uint16_t major;
+	uint16_t minor;
+	uint16_t build;
+	uint16_t revision;
+} winver_t;
+
+/* We can't use the Microsoft enums as we want to have RISC-V and LoongArch */
+enum ArchType {
+	ARCH_UNKNOWN = 0,
+	ARCH_X86_32,
+	ARCH_X86_64,
+	ARCH_ARM_32,
+	ARCH_ARM_64,
+	ARCH_IA_64,
+	ARCH_RISCV_64,
+	ARCH_LOONGARCH_64,
+	ARCH_EBC,
+	ARCH_MAX
+};
+
+typedef struct {
+	uint8_t type;
+	char path[64];
+} efi_boot_entry_t; 
+
+typedef struct {
+	char label[192];					// 3*64 to account for UTF-8
+	char usb_label[192];				// converted USB label for workaround
+	char cfg_path[128];					// path to the ISO's isolinux.cfg
+	char reactos_path[128];				// path to the ISO's freeldr.sys or setupldr.sys
+	char wininst_path[MAX_WININST][64];	// path to the Windows install image(s)
+	efi_boot_entry_t efi_boot_entry[64];// types and paths of detected UEFI bootloaders
+	char efi_img_path[128];				// path to an efi.img file
+	uint64_t image_size;
+	uint64_t projected_size;
+	int64_t mismatch_size;
+	uint32_t wininst_version;
+	BOOLEAN is_iso;
+	int8_t is_bootable_img;
+	BOOLEAN is_vhd;
+	BOOLEAN is_windows_img;
+	BOOLEAN disable_iso;
+	BOOLEAN rh8_derivative;
+	uint16_t winpe;
+	uint16_t has_efi;
+	uint8_t has_md5sum;
+	uint8_t wininst_index;
+	uint8_t has_symlinks;
+	BOOLEAN has_4GB_file;
+	BOOLEAN has_long_filename;
+	BOOLEAN has_deep_directories;
+	BOOLEAN has_bootmgr;
+	BOOLEAN has_bootmgr_efi;
+	BOOLEAN has_autorun;
+	BOOLEAN has_old_c32[NB_OLD_C32];
+	BOOLEAN has_old_vesamenu;
+	BOOLEAN has_efi_syslinux;
+	BOOLEAN has_grub4dos;
+	uint8_t has_grub2;
+	BOOLEAN has_compatresources_dll;
+	BOOLEAN has_panther_unattend;
+	BOOLEAN has_kolibrios;
+	BOOLEAN needs_syslinux_overwrite;
+	BOOLEAN needs_ntfs;
+	BOOLEAN uses_casper;
+	BOOLEAN uses_minint;
+	uint8_t compression_type;
+	winver_t win_version;	// Windows ISO version
+	uint16_t sl_version;	// Syslinux/Isolinux version
+	char sl_version_str[12];
+	char sl_version_ext[32];
+	char grub2_version[192];
+} RUFUS_IMG_REPORT;
+
+/*
+ * Structure and macros used for the extensions specification of FileDialog()
+ * You can use:
+ *   EXT_DECL(my_extensions, "default.std", __VA_GROUP__("*.std", "*.other"), __VA_GROUP__("Standard type", "Other Type"));
+ * to define an 'ext_t my_extensions' variable initialized with the relevant attributes.
+ */
+typedef struct ext_t {
+	size_t count;
+	const char* filename;
+	const char** extension;
+	const char** description;
+} ext_t;
+
+/* DLL address resolver */
+typedef struct {
+	char* path;
+	uint32_t    count;
+	char** name;
+	uint32_t* address;	// 32-bit will do, as we're not dealing with >4GB DLLs...
+} dll_resolver_t;
+
+/* SBAT entry */
+typedef struct {
+	char* product;
+	uint32_t version;
+} sbat_entry_t;
+
+/* Alignment macro */
+#if defined(__GNUC__)
+#define ALIGNED(m) __attribute__ ((__aligned__(m)))
+#elif defined(_MSC_VER)
+#define ALIGNED(m) __declspec(align(m))
+#endif
+
+/* Hash definitions */
+enum hash_type {
+	HASH_MD5 = 0,
+	HASH_SHA1,
+	HASH_SHA256,
+	HASH_SHA512,
+	HASH_MAX
+};
+
+/* Blocksize for each hash algorithm - Must be a power of 2 */
+#define MD5_BLOCKSIZE       64
+#define SHA1_BLOCKSIZE      64
+#define SHA256_BLOCKSIZE    64
+#define SHA512_BLOCKSIZE    128
+#define MAX_BLOCKSIZE       SHA512_BLOCKSIZE
+
+/* Hashsize for each hash algorithm */
+#define MD5_HASHSIZE        16
+#define SHA1_HASHSIZE       20
+#define SHA256_HASHSIZE     32
+#define SHA512_HASHSIZE     64
+#define MAX_HASHSIZE        SHA512_HASHSIZE
+
+/* Context for the hash algorithms */
+typedef struct ALIGNED(64) {
+	uint8_t buf[MAX_BLOCKSIZE];
+	uint64_t state[8];
+	uint64_t bytecount;
+} HASH_CONTEXT;
+
+/* Certificate info */
+typedef struct {
+	char name[256];
+	uint8_t thumbprint[SHA1_HASHSIZE];
+} cert_info_t;
+
+/* Hash functions */
+typedef void hash_init_t(HASH_CONTEXT* ctx);
+typedef void hash_write_t(HASH_CONTEXT* ctx, const uint8_t* buf, size_t len);
+typedef void hash_final_t(HASH_CONTEXT* ctx);
+extern hash_init_t* hash_init[HASH_MAX];
+extern hash_write_t* hash_write[HASH_MAX];
+extern hash_final_t* hash_final[HASH_MAX];
+
+#ifndef __VA_GROUP__
+#define __VA_GROUP__(...)  __VA_ARGS__
+#endif
+#define EXT_X(prefix, ...) const char* _##prefix##_x[] = { __VA_ARGS__ }
+#define EXT_D(prefix, ...) const char* _##prefix##_d[] = { __VA_ARGS__ }
+#define EXT_DECL(var, filename, extensions, descriptions)                   \
+	EXT_X(var, extensions);                                                 \
+	EXT_D(var, descriptions);                                               \
+	ext_t var = { ARRAYSIZE(_##var##_x), filename, _##var##_x, _##var##_d }
+
+/* Duplication of the TBPFLAG enum for Windows taskbar progress */
+typedef enum TASKBAR_PROGRESS_FLAGS
+{
+	TASKBAR_NOPROGRESS = 0,
+	TASKBAR_INDETERMINATE = 0x1,
+	TASKBAR_NORMAL = 0x2,
+	TASKBAR_ERROR = 0x4,
+	TASKBAR_PAUSED = 0x8
+} TASKBAR_PROGRESS_FLAGS;
+
+static __inline USHORT GetApplicationArch(void)
+{
+#if defined(_M_AMD64)
+	return IMAGE_FILE_MACHINE_AMD64;
+#elif defined(_M_IX86)
+	return IMAGE_FILE_MACHINE_I386;
+#elif defined(_M_ARM64)
+	return IMAGE_FILE_MACHINE_ARM64;
+#elif defined(_M_ARM)
+	return IMAGE_FILE_MACHINE_ARM;
+#else
+	return IMAGE_FILE_MACHINE_UNKNOWN;
+#endif
+}
+
+static __inline const char* GetArchName(USHORT uArch)
+{
+	switch (uArch) {
+	case IMAGE_FILE_MACHINE_AMD64:
+		return "x64";
+	case IMAGE_FILE_MACHINE_I386:
+		return "x86";
+	case IMAGE_FILE_MACHINE_ARM64:
+		return "ARM64";
+	case IMAGE_FILE_MACHINE_ARM:
+		return "ARM32";
+	default:
+		return "Unknown";
+	}
+}
+
+/* Windows versions */
+enum WindowsVersion {
+	WINDOWS_UNDEFINED = 0,
+	WINDOWS_XP = 0x51,
+	WINDOWS_2003 = 0x52,	// Also XP_64
+	WINDOWS_VISTA = 0x60,	// Also Server 2008
+	WINDOWS_7 = 0x61,		// Also Server 2008_R2
+	WINDOWS_8 = 0x62,		// Also Server 2012
+	WINDOWS_8_1 = 0x63,		// Also Server 2012_R2
+	WINDOWS_10_PREVIEW1 = 0x64,
+	WINDOWS_10 = 0xA0,		// Also Server 2016, also Server 2019
+	WINDOWS_11 = 0xB0,		// Also Server 2022
+	WINDOWS_MAX = 0xFFFF,
+};
+
+typedef struct {
+	DWORD Major;
+	DWORD Minor;
+	DWORD Micro;
+	DWORD Nano;
+} version_t;
+
+typedef struct {
+	DWORD Version;
+	DWORD Major;
+	DWORD Minor;
+	DWORD BuildNumber;
+	DWORD Ubr;
+	DWORD Edition;
+	USHORT Arch;
+	char VersionStr[128];
+} windows_version_t;
+
+
+
+/**
+ * Globals
+ */
+extern RUFUS_UPDATE update;
+extern WORD selected_langid;
+extern DWORD ErrorStatus, DownloadStatus, MainThreadId, LastWriteError;
+extern BOOL use_own_c32[NB_OLD_C32], detect_fakes, op_in_progress, right_to_left_mode;
+extern BOOL allow_dual_uefi_bios, large_drive, usb_debug;
+extern uint8_t image_options, *pe256ssp;
+extern uint16_t rufus_version[3], embedded_sl_version[2];
+extern uint32_t pe256ssp_size;
+extern uint64_t persistence_size;
+extern int64_t iso_blocking_status;
+extern size_t ubuffer_pos;
+extern int dialog_showing, force_update, fs_type, boot_type, partition_type, target_type;
+extern unsigned long syslinux_ldlinux_len[2];
+extern char szFolderPath[MAX_PATH], app_dir[MAX_PATH], temp_dir[MAX_PATH], system_dir[MAX_PATH];
+extern char sysnative_dir[MAX_PATH], app_data_dir[MAX_PATH], *image_path, *fido_url;
+
 

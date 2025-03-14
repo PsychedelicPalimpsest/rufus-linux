@@ -97,7 +97,8 @@ liblinux_specific_a_AR = $(AR) $(ARFLAGS)
 liblinux_specific_a_LIBADD =
 am_liblinux_specific_a_OBJECTS =  \
 	liblinux_specific_a-pseudo_windows.$(OBJEXT) \
-	liblinux_specific_a-locale.$(OBJEXT)
+	liblinux_specific_a-locale.$(OBJEXT) \
+	liblinux_specific_a-winio.$(OBJEXT)
 liblinux_specific_a_OBJECTS = $(am_liblinux_specific_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -255,7 +256,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = liblinux_specific.a
-liblinux_specific_a_SOURCES = pseudo_windows.c locale.c
+liblinux_specific_a_SOURCES = pseudo_windows.c locale.c winio.c
 liblinux_specific_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../common -Wno-undef -Wno-strict-aliasing -Wno-shadow
 all: all-am
 
@@ -323,6 +324,12 @@ liblinux_specific_a-locale.o: locale.c
 
 liblinux_specific_a-locale.obj: locale.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-locale.obj `if test -f 'locale.c'; then $(CYGPATH_W) 'locale.c'; else $(CYGPATH_W) '$(srcdir)/locale.c'; fi`
+
+liblinux_specific_a-winio.o: winio.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-winio.o `test -f 'winio.c' || echo '$(srcdir)/'`winio.c
+
+liblinux_specific_a-winio.obj: winio.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-winio.obj `if test -f 'winio.c'; then $(CYGPATH_W) 'winio.c'; else $(CYGPATH_W) '$(srcdir)/winio.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

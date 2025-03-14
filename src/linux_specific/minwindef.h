@@ -56,6 +56,7 @@ extern "C" {
 #define LPCSTR const char*
 #define LPCTSTR const char*
 #define LPCWSTR const WCHAR*
+#define VOID void
 
 /* Handle types */
 #define HMENU void*
@@ -240,7 +241,10 @@ typedef unsigned int ULONG, *PULONG;
 #endif
 #endif
 
-typedef int             BOOL,       *PBOOL,    *LPBOOL;
+typedef int             BOOL,        *PBOOL,    *LPBOOL;
+
+typedef BOOL BOOLEAN;
+
 typedef unsigned char   BYTE,       *PBYTE,    *LPBYTE;
 typedef unsigned short  WORD,       *PWORD,    *LPWORD;
 typedef int             INT,        *PINT,     *LPINT;

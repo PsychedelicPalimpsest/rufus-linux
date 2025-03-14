@@ -20,6 +20,7 @@
 
 #include <pseudo_windows.h>
 #include "msapi_utf8.h"
+#include "winio.h"
 
 #pragma once
 
@@ -57,7 +58,7 @@ typedef struct {
 /// <param name="dwCreationDisposition">Action to take on a file or device that exists or does not exist</param>
 /// <param name="dwFlagsAndAttributes">The file or device attributes and flags</param>
 /// <returns>Non NULL on success</returns>
-static __inline HANDLE CreateFileAsync(LPCSTR lpFileName, DWORD dwDesiredAccess,
+HANDLE CreateFileAsync(LPCSTR lpFileName, DWORD dwDesiredAccess,
 	DWORD dwShareMode, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes)
 {
 	ASYNC_FD* fd = calloc(sizeof(ASYNC_FD), 1);
@@ -80,7 +81,7 @@ static __inline HANDLE CreateFileAsync(LPCSTR lpFileName, DWORD dwDesiredAccess,
 /// Close a previously opened asynchronous file
 /// </summary>
 /// <param name="h">An async handle, created by a call to CreateFileAsync()</param>
-static __inline VOID CloseFileAsync(HANDLE h)
+VOID CloseFileAsync(HANDLE h)
 {
 	ASYNC_FD* fd = (ASYNC_FD*)h;
 	if (fd == NULL || fd == INVALID_HANDLE_VALUE)
@@ -97,7 +98,7 @@ static __inline VOID CloseFileAsync(HANDLE h)
 /// <param name="lpBuffer">The buffer that receives the data</param>
 /// <param name="nNumberOfBytesToRead">Number of bytes requested</param>
 /// <returns>TRUE on success, FALSE on error</returns>
-static __inline BOOL ReadFileAsync(HANDLE h, LPVOID lpBuffer, DWORD nNumberOfBytesToRead)
+BOOL ReadFileAsync(HANDLE h, LPVOID lpBuffer, DWORD nNumberOfBytesToRead)
 {
 	ASYNC_FD* fd = (ASYNC_FD*)h;
 	fd->Overlapped.bOffsetUpdated = FALSE;
@@ -119,7 +120,7 @@ static __inline BOOL ReadFileAsync(HANDLE h, LPVOID lpBuffer, DWORD nNumberOfByt
 /// <param name="lpBuffer">The buffer that contains the data</param>
 /// <param name="nNumberOfBytesToWrite">Number of bytes to write</param>
 /// <returns>TRUE on success, FALSE on error</returns>
-static __inline BOOL WriteFileAsync(HANDLE h, LPVOID lpBuffer, DWORD nNumberOfBytesToWrite)
+BOOL WriteFileAsync(HANDLE h, LPVOID lpBuffer, DWORD nNumberOfBytesToWrite)
 {
 	ASYNC_FD* fd = (ASYNC_FD*)h;
 	fd->Overlapped.bOffsetUpdated = FALSE;
@@ -139,7 +140,7 @@ static __inline BOOL WriteFileAsync(HANDLE h, LPVOID lpBuffer, DWORD nNumberOfBy
 /// <param name="h">An async handle, created by a call to CreateFileAsync()</param>
 /// <param name="dwTimeout">A timeout value, in ms</param>
 /// <returns>TRUE on success, FALSE on error</returns>
-static __inline BOOL WaitFileAsync(HANDLE h, DWORD dwTimeout)
+BOOL WaitFileAsync(HANDLE h, DWORD dwTimeout)
 {
 	ASYNC_FD* fd = (ASYNC_FD*)h;
 	if (fd->iStatus > 0)	// Read completed synchronously
@@ -154,7 +155,7 @@ static __inline BOOL WaitFileAsync(HANDLE h, DWORD dwTimeout)
 /// <param name="h">An async handle, created by a call to CreateFileAsync()</param>
 /// <param name="lpNumberOfBytes">A pointer that receives the number of bytes transferred.</param>
 /// <returns>TRUE on success, FALSE on error</returns>
-static __inline BOOL GetSizeAsync(HANDLE h, LPDWORD lpNumberOfBytes)
+BOOL GetSizeAsync(HANDLE h, LPDWORD lpNumberOfBytes)
 {
 	ASYNC_FD* fd = (ASYNC_FD*)h;
 	// Previous call to [Read/Write]FileAsync() failed

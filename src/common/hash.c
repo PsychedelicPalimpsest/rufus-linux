@@ -63,11 +63,19 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <inttypes.h>
 #include <errno.h>
+
+#ifdef _WIN32
+#include <inttypes.h>
 #include <intrin.h>
 #include <pseudo_windows.h>
 #include <windowsx.h>
+#else
+#include <immintrin.h>
+#endif
+
+
+
 
 #include "db.h"
 #include "rufus.h"
@@ -1519,6 +1527,10 @@ static void null_write(HASH_CONTEXT *ctx, const uint8_t *buf, size_t len) { }
 static void null_final(HASH_CONTEXT *ctx) { }
 #endif
 
+#ifndef _WIN32
+#include <unistd.h>
+#endif
+
 hash_init_t *hash_init[HASH_MAX] = { md5_init, sha1_init , sha256_init, sha512_init };
 hash_write_t *hash_write[HASH_MAX] = { md5_write, sha1_write , sha256_write, sha512_write };
 hash_final_t *hash_final[HASH_MAX] = { md5_final, sha1_final , sha256_final, sha512_final };
@@ -1528,7 +1540,6 @@ BOOL HashFile(const unsigned type, const char* path, uint8_t* hash)
 {
 	BOOL r = FALSE;
 	HASH_CONTEXT hash_ctx = { {0} };
-	HANDLE h = INVALID_HANDLE_VALUE;
 	DWORD rs = 0;
 	uint64_t rb;
 	uint8_t buf[4096];
@@ -1536,6 +1547,8 @@ BOOL HashFile(const unsigned type, const char* path, uint8_t* hash)
 	if ((type >= HASH_MAX) || (path == NULL) || (hash == NULL))
 		goto out;
 
+	#ifdef _WIN32
+	HANDLE h = INVALID_HANDLE_VALUE;
 	h = CreateFileU(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	if (h == INVALID_HANDLE_VALUE) {
 		uprintf("Could not open file: %s", WindowsErrorString());
@@ -1543,10 +1556,20 @@ BOOL HashFile(const unsigned type, const char* path, uint8_t* hash)
 		goto out;
 	}
 
+	#else
+	int h = open(path, 0);
+	#endif
+
 	hash_init[type](&hash_ctx);
 	for (rb = 0; ; rb += rs) {
 		CHECK_FOR_USER_CANCEL;
-		if (!ReadFile(h, buf, sizeof(buf), &rs, NULL)) {
+		#ifdef _WIN32
+		int is_success = ReadFile(h, buf, sizeof(buf), &rs, NULL);
+		#else
+		rs = read(h, buf, sizeof(buf));
+		int is_success = rs != -1;
+		#endif
+		if (!is_success) {
 			ErrorStatus = RUFUS_ERROR(ERROR_READ_FAULT);
 			uprintf("  Read error: %s", WindowsErrorString());
 			goto out;
@@ -1561,7 +1584,12 @@ BOOL HashFile(const unsigned type, const char* path, uint8_t* hash)
 	r = TRUE;
 
 out:
+	#ifdef _WIN32
 	safe_closehandle(h);
+	#else
+	close(h);
+	#endif
+
 	return r;
 }
 
@@ -1881,6 +1909,11 @@ out:
 	return r;
 }
 
+
+
+// TODO: Find a linux implmentation
+#ifdef _WIN32
+
 /*
  * Hash dialog callback
  */
@@ -2122,6 +2155,7 @@ out:
 		MyDialogBox(hMainInstance, IDD_HASH, hMainDialog, HashCallback);
 	ExitThread(r);
 }
+#endif /* _WIN32 */
 
 /*
  * The following 2 calls are used to check whether a buffer/file is in our hash DB

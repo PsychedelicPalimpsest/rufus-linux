@@ -4925,8 +4925,24 @@ else
   BUILD_LINUX_FALSE=
 fi
 
+     if false; then
+  BUILD_WINDOWS_TRUE=
+  BUILD_WINDOWS_FALSE='#'
+else
+  BUILD_WINDOWS_TRUE='#'
+  BUILD_WINDOWS_FALSE=
+fi
+
     ;;
   *mingw* | *cygwin*)
+     if false; then
+  BUILD_LINUX_TRUE=
+  BUILD_LINUX_FALSE='#'
+else
+  BUILD_LINUX_TRUE='#'
+  BUILD_LINUX_FALSE=
+fi
+
      if true; then
   BUILD_WINDOWS_TRUE=
   BUILD_WINDOWS_FALSE='#'
@@ -5116,6 +5132,14 @@ else
   am__EXEEXT_FALSE=
 fi
 
+if test -z "${BUILD_LINUX_TRUE}" && test -z "${BUILD_LINUX_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_LINUX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_WINDOWS_TRUE}" && test -z "${BUILD_WINDOWS_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_WINDOWS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${BUILD_LINUX_TRUE}" && test -z "${BUILD_LINUX_FALSE}"; then
   as_fn_error $? "conditional \"BUILD_LINUX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
