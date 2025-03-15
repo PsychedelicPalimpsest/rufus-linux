@@ -23,6 +23,21 @@
 #define _WINNT_
 
 
+
+
+
+#define LOBYTE(w)              ((BYTE)((w) & 0xFF))
+#define HIBYTE(w)              ((BYTE)((w) >> 8))
+
+#define LOWORD(l)              ((WORD)((l) & 0xFFFF))
+#define HIWORD(l)              ((WORD)((l) >> 16))
+
+#define MAKEWORD(low,high)     ((WORD)(((BYTE)((low) & 0xFF)) | ((WORD)((BYTE)((high) & 0xFF))) << 8))
+#define MAKELONG(low,high)     ((LONG)(((WORD)((low) & 0xFFFF)) | ((DWORD)((WORD)((high) & 0xFFFF))) << 16))
+
+
+
+
 #ifndef WINAPI
 #define WINAPI
 #endif
@@ -81,6 +96,8 @@ typedef unsigned char UCHAR, *PUCHAR;
 typedef unsigned short USHORT, *PUSHORT;
 // #if !defined(__LP64__) && !defined(WINE_NO_LONG_TYPES)
 typedef unsigned long ULONG, *PULONG, *PULONG64, *ULONG_PTR;
+typedef ULONG_PTR DWORD_PTR, *PDWORD_PTR;
+
 // #else
 // typedef unsigned int ULONG, *PULONG;
 // typedef unsigned int ULONG, *PULONG64;

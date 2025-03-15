@@ -21,16 +21,7 @@
 #include <wctype.h>
 
 
-// This can and should be done better,
-// but will work in this case!
-DWORD CharUpperBuffW(WCHAR *str, DWORD len)
-{
-    for (DWORD i = 0; i < len; i++)
-    {
-    	str[i] = (WCHAR) towupper((wint_t) str[i]);
-    }
-    return len;
-}
+
 #include <time.h>
 
 
@@ -67,4 +58,20 @@ int strncat_s(char *dest, size_t destsz, const char *src, size_t count){
     if (src[i] && (count == _TRUNCATE || i == count)) return STRUNCATE;
 
 	return 0;
+}
+
+int lstrcmpiA(const char *str1, const char *str2)
+{
+    if (!str1 && !str2) return 0;
+    if (!str1) return -1;
+    if (!str2) return 1;
+
+    while (*str1 && *str2) {
+        unsigned char c1 = tolower((unsigned char)*str1);
+        unsigned char c2 = tolower((unsigned char)*str2);
+        if (c1 != c2) return c1 - c2;
+        str1++;
+        str2++;
+    }
+    return tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
 }

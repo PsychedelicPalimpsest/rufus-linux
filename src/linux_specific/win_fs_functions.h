@@ -21,6 +21,7 @@
 #pragma once
 
 #include <sys/stat.h>
+#include <stdio.h>
 
 // Allow the underscore FS functions
 #define _openU open
@@ -38,4 +39,7 @@ static __inline BOOL PathFileExistsA(
 	// when the file is not found.
 	errno = 0;
 	return 0;
+}
+static __inline BOOL MoveFileU(LPCSTR src, LPCSTR dest){
+	return !rename(src, dest);
 }

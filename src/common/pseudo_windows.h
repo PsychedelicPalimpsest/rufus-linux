@@ -46,6 +46,7 @@ typedef int HANDLE;
 #endif
 
 #include "../linux_specific/mini_winnt.h"
+#include "../linux_specific/wine_string.h"
 #include "../linux_specific/locale.h"
 
 #include <errno.h>
@@ -150,10 +151,14 @@ static __inline int _sopen_s(int *pfh, const char *filename, int flags, int shar
 // Should be the same as the microsofty implementation
 int strncat_s(char *dest, size_t destsz, const char *src, size_t count);
 
+#include <ctype.h>
+
+int lstrcmpiA(const char *str1, const char *str2);
 
 
 
 DWORD CharUpperBuffW(WCHAR *str, DWORD len);
 ULONGLONG GetTickCount64(void);
+
 
 #endif
