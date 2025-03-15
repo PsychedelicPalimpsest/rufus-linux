@@ -26,28 +26,23 @@
 #else
 #include <stddef.h>
 
-/**
- * I know this is not one to one, but just working
- * with raw unix file ids and pretending they are
- * Windows HANDLEs will work well enough for Rufus
- */
+// TODO: Actually do this
+#define GetResource(...) NULL
+#define LPSECURITY_ATTRIBUTES void*
 
-
-
-#define INVALID_HANDLE_VALUE ((int) -1)
-typedef int HANDLE;
+#define INVALID_HANDLE_VALUE ((void*) -1)
+typedef void* HANDLE;
 
 #include <stdlib.h>
 
-// For some reason libbb break when _mm_malloc is defined
-#ifndef LIBBB_H
-#define _mm_malloc(SIZE_OF, ALLIGN_OF) aligned_alloc(ALLIGN_OF, SIZE_OF)
-#define _mm_free free
-#endif
+#include <mm_malloc.h>
 
+#include "../linux_specific/guiddef.h"
 #include "../linux_specific/mini_winnt.h"
 #include "../linux_specific/wine_string.h"
 #include "../linux_specific/locale.h"
+
+
 
 #include <errno.h>
 #include <assert.h>
@@ -55,7 +50,7 @@ typedef int HANDLE;
 #include <string.h>
 
 // Is this a close enough aproximation?
-#define WindowsErrorString() strerror(errno)
+// #define WindowsErrorString() strerror(errno)
 
 
 #define _snprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)

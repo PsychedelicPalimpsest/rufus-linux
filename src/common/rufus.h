@@ -661,6 +661,13 @@ extern uint8_t* GetPeSignatureData(uint8_t* buf);
 extern BOOL ValidateOpensslSignature(BYTE* pbBuffer, DWORD dwBufferLen, BYTE* pbSignature, DWORD dwSigLen);
 extern BOOL ParseSKUSiPolicy(void);
 
+extern BOOL IsFontAvailable(const char* font_name);
+extern BOOL WriteFileWithRetry(HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite,
+	LPDWORD lpNumberOfBytesWritten, DWORD nNumRetries);
+extern HANDLE CreateFileWithTimeout(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
+	LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes,
+	HANDLE hTemplateFile, DWORD dwTimeOut);
+
 
 /**
  * Globals

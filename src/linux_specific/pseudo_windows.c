@@ -75,3 +75,47 @@ int lstrcmpiA(const char *str1, const char *str2)
     }
     return tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
 }
+
+
+
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <errno.h>
+#include <sys/ioctl.h>
+#include <linux/fs.h>
+#include <sys/xattr.h>
+
+
+int create_file_linux(const char *name, int access, int creation, int attributes) {
+    int flags = access; // Start with read/write flags
+    mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH; // Default 0644
+
+    switch (creation) {
+        case CREATE_NEW:        flags |= O_CREAT | O_EXCL; break;
+        case CREATE_ALWAYS:     flags |= O_CREAT | O_TRUNC; break;
+        case OPEN_EXISTING:     break; // No flags needed, just use access
+        case OPEN_ALWAYS:       flags |= O_CREAT; break;
+        case TRUNCATE_EXISTING: flags |= O_TRUNC; break;
+        default: return -1;
+    }
+
+    int fd = open(name, flags, mode);
+    if (fd < 0) return -1;
+
+    // Handle read-only attribute
+    if (attributes & FILE_ATTRIBUTE_READONLY) {
+        chmod(name, S_IRUSR | S_IRGRP | S_IROTH);
+    }
+
+    // Handle hidden attribute (prefix with dot)
+    if (attributes & FILE_ATTRIBUTE_HIDDEN) {
+        char hidden_name[256];
+        snprintf(hidden_name, sizeof(hidden_name), ".%s", name);
+        rename(name, hidden_name);
+    }
+
+    return fd;
+}

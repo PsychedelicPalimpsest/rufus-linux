@@ -27,6 +27,24 @@
 #define _openU open
 #define _mkdirU mkdir
 #define _unlink unlink
+#define fopenU fopen
+
+#define DeleteFileW(PATH_NAME) !remove(PATH_NAME)
+#define CreateFileW CreateFileA
+
+
+#define CREATE_NEW        1
+#define CREATE_ALWAYS     2
+#define OPEN_EXISTING     3
+#define OPEN_ALWAYS       4
+#define TRUNCATE_EXISTING 5
+
+
+
+
+int create_file_linux(const char *name, int access, int creation, int attributes);
+
+
 
 static __inline BOOL PathFileExistsA(
   LPCSTR pszPath
@@ -42,4 +60,44 @@ static __inline BOOL PathFileExistsA(
 }
 static __inline BOOL MoveFileU(LPCSTR src, LPCSTR dest){
 	return !rename(src, dest);
+}
+
+
+
+static __inline DWORD windowsAccessToLinux(DWORD access){
+    if (access & GENERIC_ALL) return O_RDWR;
+    if ((access & GENERIC_READ) && (access & GENERIC_WRITE)) return O_RDWR;
+    if (access & GENERIC_READ) return O_RDONLY;
+    if (access & GENERIC_WRITE) return O_WRONLY;
+	return O_RDONLY;
+}
+
+
+#define _LINUX_FLAGS_TO_STR(FLAGS) ((FLAGS) & O_RDWR ? "r+" : ((FLAGS) & O_WRONLY ? "w" : "r"))
+
+static __inline HANDLE CreateFileA(LPCSTR name, DWORD access, DWORD sharing,
+	LPSECURITY_ATTRIBUTES sa, DWORD creation,
+	DWORD attributes, HANDLE template){
+
+	access = windowsAccessToLinux(access);
+	int fd = create_file_linux(name, access, creation, attributes);
+	if (fd == -1) return INVALID_HANDLE_VALUE;
+
+	return fdopen(fd, _LINUX_FLAGS_TO_STR(access));
+}
+BOOL WriteFile(HANDLE handle, LPCVOID buffer, DWORD count, LPDWORD result, void* lpOverlapped_ignored){
+	if (handle == NULL) return 0;
+	FILE* f = (FILE*) handle;
+	*result = fwrite(buffer, count, 1, f);
+	
+	return !errno;
+}
+
+
+
+
+static __inline VOID CloseHandle(HANDLE handle){
+	FILE* f = (FILE*) handle;
+	if (f == NULL) return;
+	fclose(f);
 }

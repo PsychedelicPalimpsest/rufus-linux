@@ -37,18 +37,13 @@ typedef struct {
     struct aiocb cb;
 } ASYNC_FD;
 
-// I'll be real, most of these args will be ignored
-// in addition this function is not actually async
-//
-// Keep in mind, that way linux support is being done,
-// dwDesiredAccess _should_ be set to a valid linux
-// set of flags, due to pseudo_windows.h
+
 ASYNC_FD* CreateFileAsync(LPCSTR lpFileName, DWORD dwDesiredAccess,
 	DWORD dwShareMode, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes){
     ASYNC_FD* afd = calloc(1, sizeof(ASYNC_FD));
     if (!afd) return NULL;
     
-    afd->fd = open(lpFileName, dwDesiredAccess);
+    afd->fd = create_file_linux(lpFileName, windowsAccessToLinux(dwDesiredAccess), dwCreationDisposition, dwFlagsAndAttributes);
     if (afd->fd == -1){
         free(afd);
         return NULL;

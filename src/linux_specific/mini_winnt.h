@@ -124,14 +124,6 @@ typedef size_t SIZE_T;
 typedef void            *LPVOID;
 typedef const void      *LPCVOID;
 
-// ????????????
-typedef struct
-{
-    uint64_t high;
-    uint64_t low;
-} GUID;
-
-
 
 
 
@@ -145,9 +137,6 @@ extern "C" {
 #endif
 
 
-
-#define NTAPI __stdcall
-#define FASTCALL __fastcall
 
 #ifndef DECLSPEC_ALIGN
 # ifdef __GNUC__

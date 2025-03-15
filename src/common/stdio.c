@@ -22,25 +22,22 @@
 #include <crtdbg.h>
 #endif
 
-#include <pseudo_windows.h>
-#include <windowsx.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <wininet.h>
-#include <winternl.h>
-#include <dbghelp.h>
 #include <assert.h>
 #include <ctype.h>
 #include <math.h>
 
 #include "rufus.h"
 #include "missing.h"
-#include "settings.h"
+// #include "settings.h"
 #include "resource.h"
 #include "msapi_utf8.h"
 #include "localization.h"
 #include "bled/bled.h"
+
+#include "pseudo_windows.h"
 
 #define FACILITY_WIM            322
 #define DEFAULT_BASE_ADDRESS    0x100000000ULL
@@ -49,9 +46,7 @@
 /*
  * Globals
  */
-const HANDLE hRufus = (HANDLE)0x0000005275667573ULL;	// "\0\0\0Rufus"
-HWND hStatus;
-size_t ubuffer_pos = 0;
+
 char ubuffer[UBUFFER_SIZE];	// Buffer for ubpushf() messages we don't log right away
 static uint64_t archive_size;
 
@@ -85,6 +80,7 @@ void uprintf(const char *format, ...)
 	*p++ = '\n';
 	*p   = '\0';
 
+	#ifdef _WIN32
 	wbuf = utf8_to_wchar(buf);
 	// Send output to Windows debug facility
 	// coverity[dont_call]
@@ -96,6 +92,9 @@ void uprintf(const char *format, ...)
 		// Make sure the message scrolls into view
 		Edit_Scroll(hLog, Edit_GetLineCount(hLog), 0);
 	}
+	#else
+	// fprintf(stdout, "%s", buf);
+	#endif
 	free(wbuf);
 }
 
@@ -103,6 +102,7 @@ void uprintfs(const char* str)
 {
 	wchar_t* wstr;
 	wstr = utf8_to_wchar(str);
+	#ifdef _WIN32
 	// coverity[dont_call]
 	OutputDebugStringW(wstr);
 	if ((hLog != NULL) && (hLog != INVALID_HANDLE_VALUE)) {
@@ -110,6 +110,7 @@ void uprintfs(const char* str)
 		Edit_ReplaceSel(hLog, wstr);
 		Edit_Scroll(hLog, Edit_GetLineCount(hLog), 0);
 	}
+	#endif
 	free(wstr);
 }
 
@@ -225,11 +226,18 @@ void DumpBufferHex(void *buf, size_t size)
 	uprintf("%s\n", line);
 }
 
+
+
 // Convert a Windows error to human readable string
 // One really has to wonder why the hell FormatMessage() was designed not to
 // handle FORMAT_MESSAGE_FROM_HMODULE automatically according to the facility...
 const char *WindowsErrorString(void)
 {
+	#ifndef _WIN32
+	// TODO: Actually do this
+	return strerror(errno);
+	#else
+
 	static char err_string[256] = { 0 };
 
 	DWORD size, presize;
@@ -308,6 +316,7 @@ retry:
 	SetThreadLocale(locale);	// Set the original thread locale on exit
 	SetLastError(error_code);	// Make sure we don't change the errorcode on exit
 	return err_string;
+	#endif
 }
 
 char* GuidToString(const GUID* guid, BOOL bDecorated)

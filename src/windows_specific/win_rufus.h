@@ -258,12 +258,6 @@ extern int IsHDD(DWORD DriveIndex, uint16_t vid, uint16_t pid, const char* strid
 
 extern LONG ValidateSignature(HWND hDlg, const char* path);
 
-extern BOOL IsFontAvailable(const char* font_name);
-extern BOOL WriteFileWithRetry(HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite,
-	LPDWORD lpNumberOfBytesWritten, DWORD nNumRetries);
-extern HANDLE CreateFileWithTimeout(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
-	LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes,
-	HANDLE hTemplateFile, DWORD dwTimeOut);
 extern BOOL SetThreadAffinity(DWORD_PTR* thread_affinity, size_t num_threads);
 extern BOOL IsSignedBySecureBootAuthority(uint8_t* buf, uint32_t len);
 extern int IsBootloaderRevoked(uint8_t* buf, uint32_t len);
