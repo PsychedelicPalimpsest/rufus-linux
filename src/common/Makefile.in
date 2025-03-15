@@ -98,7 +98,8 @@ am__v_AR_1 =
 libcommon_a_AR = $(AR) $(ARFLAGS)
 libcommon_a_LIBADD =
 am_libcommon_a_OBJECTS = libcommon_a-rufus.$(OBJEXT) \
-	libcommon_a-hash.$(OBJEXT) libcommon_a-stdio.$(OBJEXT)
+	libcommon_a-hash.$(OBJEXT) libcommon_a-stdio.$(OBJEXT) \
+	libcommon_a-dos_locale.$(OBJEXT)
 libcommon_a_OBJECTS = $(am_libcommon_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -258,7 +259,7 @@ top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libcommon.a
 
 # TODO
-libcommon_a_SOURCES = rufus.c hash.c stdio.c
+libcommon_a_SOURCES = rufus.c hash.c stdio.c dos_locale.c
 libcommon_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. \
 	-Wno-undef -Wno-strict-aliasing -Wno-shadow $(am__append_1) \
 	$(am__append_2)
@@ -334,6 +335,12 @@ libcommon_a-stdio.o: stdio.c
 
 libcommon_a-stdio.obj: stdio.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-stdio.obj `if test -f 'stdio.c'; then $(CYGPATH_W) 'stdio.c'; else $(CYGPATH_W) '$(srcdir)/stdio.c'; fi`
+
+libcommon_a-dos_locale.o: dos_locale.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-dos_locale.o `test -f 'dos_locale.c' || echo '$(srcdir)/'`dos_locale.c
+
+libcommon_a-dos_locale.obj: dos_locale.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-dos_locale.obj `if test -f 'dos_locale.c'; then $(CYGPATH_W) 'dos_locale.c'; else $(CYGPATH_W) '$(srcdir)/dos_locale.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

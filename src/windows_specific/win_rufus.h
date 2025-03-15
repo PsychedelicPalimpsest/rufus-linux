@@ -171,9 +171,6 @@ extern HWND hNBPasses, hLog, hInfo, hProgress;
 extern const int nb_steps[FS_MAX];
 extern float fScale;
 extern windows_version_t WindowsVersion;
-extern char ubuffer[UBUFFER_SIZE], embedded_sl_version_str[2][12];
-extern StrArray modified_files;
-extern RUFUS_IMG_REPORT img_report;
 
 /*
  * Shared prototypes
@@ -245,12 +242,6 @@ extern uint64_t DownloadToFileOrBufferEx(const char* url, const char* file, cons
 extern DWORD DownloadSignedFile(const char* url, const char* file, HWND hProgressDialog, BOOL PromptOnError);
 extern HANDLE DownloadSignedFileThreaded(const char* url, const char* file, HWND hProgressDialog, BOOL bPromptOnError);
 extern INT_PTR CALLBACK UpdateCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern void SetFidoCheck(void);
-extern BOOL SetUpdateCheck(void);
-extern BOOL CheckForUpdates(BOOL force);
-extern void DownloadNewVersion(void);
-extern BOOL DownloadISO(void);
-extern BOOL IsDownloadable(const char* url);
 extern BOOL IsShown(HWND hDlg);
 extern char* get_token_data_file_indexed(const char* token, const char* filename, int index);
 #define get_token_data_file(token, filename) get_token_data_file_indexed(token, filename, 1)
@@ -264,12 +255,9 @@ extern void parse_update(char* buf, size_t len);
 extern void* get_data_from_asn1(const uint8_t* buf, size_t buf_len, const char* oid_str, uint8_t asn1_type, size_t* data_len);
 extern int sanitize_label(char* label);
 extern int IsHDD(DWORD DriveIndex, uint16_t vid, uint16_t pid, const char* strid);
-extern char* GetSignatureName(const char* path, const char* country_code, BOOL bSilent);
-extern int GetIssuerCertificateInfo(uint8_t* cert, cert_info_t* info);
-extern uint64_t GetSignatureTimeStamp(const char* path);
+
 extern LONG ValidateSignature(HWND hDlg, const char* path);
-extern BOOL ValidateOpensslSignature(BYTE* pbBuffer, DWORD dwBufferLen, BYTE* pbSignature, DWORD dwSigLen);
-extern BOOL ParseSKUSiPolicy(void);
+
 extern BOOL IsFontAvailable(const char* font_name);
 extern BOOL WriteFileWithRetry(HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite,
 	LPDWORD lpNumberOfBytesWritten, DWORD nNumRetries);
@@ -277,13 +265,6 @@ extern HANDLE CreateFileWithTimeout(LPCSTR lpFileName, DWORD dwDesiredAccess, DW
 	LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes,
 	HANDLE hTemplateFile, DWORD dwTimeOut);
 extern BOOL SetThreadAffinity(DWORD_PTR* thread_affinity, size_t num_threads);
-extern BOOL DetectSHA1Acceleration(void);
-extern BOOL DetectSHA256Acceleration(void);
-extern BOOL HashFile(const unsigned type, const char* path, uint8_t* sum);
-extern BOOL PE256Buffer(uint8_t* buf, uint32_t len, uint8_t* hash);
-extern void UpdateMD5Sum(const char* dest_dir, const char* md5sum_name);
-extern BOOL HashBuffer(const unsigned type, const uint8_t* buf, const size_t len, uint8_t* sum);
-extern BOOL IsFileInDB(const char* path);
 extern BOOL IsSignedBySecureBootAuthority(uint8_t* buf, uint32_t len);
 extern int IsBootloaderRevoked(uint8_t* buf, uint32_t len);
 extern void PrintRevokedBootloaderInfo(void);
@@ -307,14 +288,7 @@ extern HICON CreateMirroredIcon(HICON hiconOrg);
 extern HANDLE CreatePreallocatedFile(const char* lpFileName, DWORD dwDesiredAccess,
 	DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition,
 	DWORD dwFlagsAndAttributes, LONGLONG fileSize);
-extern uint32_t ResolveDllAddress(dll_resolver_t* resolver);
-extern sbat_entry_t* GetSbatEntries(char* sbatlevel);
-extern uint16_t GetPeArch(uint8_t* buf);
-extern uint8_t* GetPeSection(uint8_t* buf, const char* name, uint32_t* len);
-extern uint8_t* GetPeSignatureData(uint8_t* buf);
-extern uint8_t* RvaToPhysical(uint8_t* buf, uint32_t rva);
-extern uint32_t FindResourceRva(const wchar_t* name, uint8_t* root, uint8_t* dir, uint32_t* len);
-extern DWORD ListDirectoryContent(StrArray* arr, char* dir, uint8_t type);
+
 extern BOOL TakeOwnership(LPCSTR lpszOwnFile);
 #define GetTextWidth(hDlg, id) GetTextSize(GetDlgItem(hDlg, id), NULL).cx
 

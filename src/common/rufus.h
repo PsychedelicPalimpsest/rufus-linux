@@ -228,13 +228,6 @@ static __inline void static_repchr(char* p, char s, char r) {
 #else
 
 
-extern void uprintf(const char *format, ...);
-extern void uprintfs(const char *str);
-extern char* SizeToHumanReadable(uint64_t size, BOOL copy_to_log, BOOL fake_units);
-extern char* TimestampToHumanReadable(uint64_t ts);
-extern uint32_t read_file(const char* path, uint8_t** buf);
-extern uint32_t write_file(const char* path, const uint8_t* buf, const uint32_t size);
-
 
 #define vuprintf(...) do { if (verbose) uprintf(__VA_ARGS__); } while(0)
 #define vvuprintf(...) do { if (verbose > 1) uprintf(__VA_ARGS__); } while(0)
@@ -633,6 +626,42 @@ extern void StrArrayDestroy(StrArray* arr);
 
 
 
+
+extern uint32_t ResolveDllAddress(dll_resolver_t* resolver);
+extern uint8_t* RvaToPhysical(uint8_t* buf, uint32_t rva);
+extern uint32_t FindResourceRva(const wchar_t* name, uint8_t* root, uint8_t* dir, uint32_t* len);
+extern DWORD ListDirectoryContent(StrArray* arr, char* dir, uint8_t type);
+extern BOOL DetectSHA1Acceleration(void);
+extern BOOL DetectSHA256Acceleration(void);
+extern BOOL HashFile(const unsigned type, const char* path, uint8_t* sum);
+extern BOOL PE256Buffer(uint8_t* buf, uint32_t len, uint8_t* hash);
+extern void UpdateMD5Sum(const char* dest_dir, const char* md5sum_name);
+extern BOOL HashBuffer(const unsigned type, const uint8_t* buf, const size_t len, uint8_t* sum);
+extern BOOL IsFileInDB(const char* path);
+extern void SetFidoCheck(void);
+extern BOOL SetUpdateCheck(void);
+extern BOOL CheckForUpdates(BOOL force);
+extern void DownloadNewVersion(void);
+extern BOOL DownloadISO(void);
+extern BOOL IsDownloadable(const char* url);
+extern char* GetSignatureName(const char* path, const char* country_code, BOOL bSilent);
+extern int GetIssuerCertificateInfo(uint8_t* cert, cert_info_t* info);
+extern uint64_t GetSignatureTimeStamp(const char* path);
+
+extern void uprintf(const char *format, ...);
+extern void uprintfs(const char *str);
+extern char* SizeToHumanReadable(uint64_t size, BOOL copy_to_log, BOOL fake_units);
+extern char* TimestampToHumanReadable(uint64_t ts);
+extern uint32_t read_file(const char* path, uint8_t** buf);
+extern uint32_t write_file(const char* path, const uint8_t* buf, const uint32_t size);
+extern sbat_entry_t* GetSbatEntries(char* sbatlevel);
+extern uint16_t GetPeArch(uint8_t* buf);
+extern uint8_t* GetPeSection(uint8_t* buf, const char* name, uint32_t* len);
+extern uint8_t* GetPeSignatureData(uint8_t* buf);
+extern BOOL ValidateOpensslSignature(BYTE* pbBuffer, DWORD dwBufferLen, BYTE* pbSignature, DWORD dwSigLen);
+extern BOOL ParseSKUSiPolicy(void);
+
+
 /**
  * Globals
  */
@@ -652,5 +681,7 @@ extern int dialog_showing, force_update, fs_type, boot_type, partition_type, tar
 extern unsigned long syslinux_ldlinux_len[2];
 extern char szFolderPath[MAX_PATH], app_dir[MAX_PATH], temp_dir[MAX_PATH], system_dir[MAX_PATH];
 extern char sysnative_dir[MAX_PATH], app_data_dir[MAX_PATH], *image_path, *fido_url;
-
+extern char ubuffer[UBUFFER_SIZE], embedded_sl_version_str[2][12];
+extern StrArray modified_files;
+extern RUFUS_IMG_REPORT img_report;
 

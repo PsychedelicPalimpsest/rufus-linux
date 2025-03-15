@@ -63,6 +63,7 @@ typedef int HANDLE;
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#define _strdup strdup
 #define _chmod chmod
 /** The following is my best attempt to Emulate the windows file parameters.
  *  Unfortinatly I can not emulate them all one-to-one
@@ -135,6 +136,19 @@ static __inline int _sopen_s(int *pfh, const char *filename, int flags, int shar
 
 #include "../linux_specific/winerror.h"
 #include "../linux_specific/win_fs_functions.h"
+
+
+
+
+
+// Might not exist
+#ifndef STRUNCATE
+#define STRUNCATE 80
+#endif
+
+#define _TRUNCATE  ((size_t)-1)
+// Should be the same as the microsofty implementation
+int strncat_s(char *dest, size_t destsz, const char *src, size_t count);
 
 
 

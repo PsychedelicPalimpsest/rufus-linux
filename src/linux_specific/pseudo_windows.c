@@ -40,3 +40,31 @@ ULONGLONG GetTickCount64(void) {
     return (ULONGLONG)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
+
+
+int strncat_s(char *dest, size_t destsz, const char *src, size_t count){
+	size_t start;
+	int i;
+
+	if (dest == NULL || src == NULL || destsz == 0) return EINVAL;
+	start = strlen(dest);
+	
+	
+	// Can not even add one char
+	if (start+1 >= destsz){
+		dest[0] = 0;
+		return ERANGE;
+	}
+
+	// Only copy while it is safe and while it has something to copy
+	for(i = 0; i + start < destsz - 1 && src[i] && i < count; i++){
+		dest[i + start] = src[i];
+	}
+
+	dest[i + start] = 0;
+
+    // Something went wrong
+    if (src[i] && (count == _TRUNCATE || i == count)) return STRUNCATE;
+
+	return 0;
+}
