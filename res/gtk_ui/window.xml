@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>	<requires lib="gtk+" version="4.0"/>
+<object class="GtkWindow" id="window">
+    <property name="can-focus">False</property>
+    <child>
+        <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+
+            <property name="column-homogeneous">False</property>
+
+            <child>
+                <object class="GtkLabel" id="ID_2016">
+                    <property name="label">Drive Properties</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">7</property>
+                        <property name="row">2</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+                <object class="GtkLabel" id="ID_2000">
+                    <property name="label">Device</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">27</property>
+                        <property name="row">6</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="ID_1001">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1001</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">25</property>
+                    <property name="row">8</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkButton" id="ID_1024">
+                <property name="label" translatable="yes">...</property>
+                <property name="visible">False</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">27</property>
+                    <property name="column-span">2</property>
+                    <property name="row">8</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2015">
+                    <property name="label">Boot selection</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">27</property>
+                        <property name="row">11</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="ID_1011">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1011</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">19</property>
+                    <property name="row">13</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkButton" id="ID_1025">
+                <property name="label" translatable="yes">#</property>
+                <property name="visible">False</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">21</property>
+                    <property name="column-span">2</property>
+                    <property name="row">13</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkButton" id="ID_1014">
+                <property name="label" translatable="yes">SELECT</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">23</property>
+                    <property name="column-span">6</property>
+                    <property name="row">13</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2014">
+                    <property name="label">Image option</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">27</property>
+                        <property name="row">17</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="ID_1026">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1026</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">12</property>
+                    <property name="row">19</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+<!-- UNSUPPORTED CONTROL STYLE OF '"msctls_trackbar32"'' -->
+        <child>
+          <object class="GtkTextView" id="ID_1018">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <!--- <property name="input-purpose">number</property> -->
+            <layout>
+                <property name="column">20</property>
+                <property name="column-span">5</property>
+                <property name="row">19</property>
+                <property name="row-span">1</property>
+            </layout>
+          </object>
+        </child>
+        
+            <child>
+              <object class="GtkComboBoxText" id="ID_1019">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1019</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">25</property>
+                    <property name="column-span">3</property>
+                    <property name="row">19</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2001">
+                    <property name="label">Partition scheme</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">12</property>
+                        <property name="row">22</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="ID_1004">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1004</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">12</property>
+                    <property name="row">24</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2013">
+                    <property name="label">Target system</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">16</property>
+                        <property name="column-span">12</property>
+                        <property name="row">22</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="ID_1017">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1017</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">16</property>
+                    <property name="column-span">12</property>
+                    <property name="row">24</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2005">
+                    <property name="label">?</property>
+                    <property name="halign">start</property>
+                    <property name="visible">False</property>
+                    <layout>
+                        <property name="column">29</property>
+                        <property name="column-span">1</property>
+                        <property name="row">25</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="ID_1028">
+                <property name="label" translatable="yes">Show advanced drive properties</property>
+                <property name="visible">False</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">27</property>
+                    <property name="row">28</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkCheckButton" id="ID_1022">
+                <property name="label" translatable="yes">List USB Hard Drives</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">27</property>
+                    <property name="row">30</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkCheckButton" id="ID_1020">
+                <property name="label" translatable="yes">Add fixes for old BIOSes (extra partition, align, etc.)</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">27</property>
+                    <property name="row">33</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkCheckButton" id="ID_1021">
+                <property name="label" translatable="yes">Enable runtime UEFI media validation</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">27</property>
+                    <property name="row">35</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2017">
+                    <property name="label">Format Options</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">8</property>
+                        <property name="row">38</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+                <object class="GtkLabel" id="ID_2004">
+                    <property name="label">Volume label</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">27</property>
+                        <property name="row">42</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+        <child>
+          <object class="GtkTextView" id="ID_1007">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <!--- <property name="input-purpose">number</property> -->
+            <layout>
+                <property name="column">1</property>
+                <property name="column-span">27</property>
+                <property name="row">44</property>
+                <property name="row-span">1</property>
+            </layout>
+          </object>
+        </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2002">
+                    <property name="label">File system</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">12</property>
+                        <property name="row">48</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="ID_1002">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1002</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">12</property>
+                    <property name="row">50</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2003">
+                    <property name="label">Cluster size</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">16</property>
+                        <property name="column-span">12</property>
+                        <property name="row">48</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="ID_1005">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1005</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">16</property>
+                    <property name="column-span">12</property>
+                    <property name="row">50</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkCheckButton" id="ID_1029">
+                <property name="label" translatable="yes">Show advanced format options</property>
+                <property name="visible">False</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">27</property>
+                    <property name="row">53</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkCheckButton" id="ID_1008">
+                <property name="label" translatable="yes">Quick format</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">27</property>
+                    <property name="row">56</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkCheckButton" id="ID_1015">
+                <property name="label" translatable="yes">Create extended label and icon files</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">27</property>
+                    <property name="row">58</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkCheckButton" id="ID_1009">
+                <property name="label" translatable="yes">Check device for bad blocks</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">14</property>
+                    <property name="row">61</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkComboBoxText" id="ID_1012">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+               <items>
+                  <item id="0" translatable="yes">ID_1012</item>
+                  <item id="1" translatable="yes">bar</item>
+                </items>
+                <layout>
+                    <property name="column">16</property>
+                    <property name="column-span">12</property>
+                    <property name="row">61</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+                <object class="GtkLabel" id="ID_2018">
+                    <property name="label">Status</property>
+                    <property name="halign">start</property>
+                    <property name="visible">True</property>
+                    <layout>
+                        <property name="column">1</property>
+                        <property name="column-span">3</property>
+                        <property name="row">64</property>
+                        <property name="row-span">1</property>
+                    </layout>
+                </object>
+            </child>
+<!-- UNSUPPORTED CONTROL STYLE OF '"msctls_progress32"'' -->
+            <child>
+              <object class="GtkButton" id="ID_1052">
+                <property name="label" translatable="yes">Multi Toolbar</property>
+                <property name="visible">False</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="column-span">10</property>
+                    <property name="row">74</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkButton" id="ID_1013">
+                <property name="label" translatable="yes">T</property>
+                <property name="visible">False</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">12</property>
+                    <property name="column-span">2</property>
+                    <property name="row">74</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkButton" id="ID_1003">
+                <property name="label" translatable="yes">START</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">16</property>
+                    <property name="column-span">6</property>
+                    <property name="row">74</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+            <child>
+              <object class="GtkButton" id="IDCANCEL">
+                <property name="label" translatable="yes">CLOSE</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <layout>
+                    <property name="column">23</property>
+                    <property name="column-span">6</property>
+                    <property name="row">74</property>
+                    <property name="row-span">1</property>
+                </layout>
+              </object>
+            </child>
+        
+<!-- UNSUPPORTED ELEMENT <END> -->
+</object></child></object></interface>
