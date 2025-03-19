@@ -93,30 +93,45 @@ def parseUiLine(data):
     return (name, list(map(lambda x: x.strip(), arguments)), data[i:])
 
 
-def heightCorrect(name, args):
-    args[4] = 1 * GRID_Y_PX_RATIO
+# Make sure the end result will be 1 grid tall
+def overideComboHeight(name, args):
+    args[4] = GRID_Y_PX_RATIO
     return (name, args)
-
+def makeBold(xml, name, args):
+    return xml.replace("</object>", """
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="scale" value="1.5"/>
+            </attributes>
+        </object>""")
 
 # Small tweeks that need done to look right
 OVERIDES = [
-    (
-        lambda name, args: name == "COMBOBOX",
-        heightCorrect, None
-    )
     
-
+    # Not sure why, but comboboxes in GTK have height issues
+    (
+        lambda name, _: name == "COMBOBOX",
+        overideComboHeight,
+        None
+    ),
+    # Make things big and bold
+    (
+        lambda name, args: name == "LTEXT" and args[1] in ["IDS_DRIVE_PROPERTIES_TXT", "IDS_FORMAT_OPTIONS_TXT"],
+        None,
+        makeBold
+    )
 ]
 import math
-# Glade refuses to open too big of a grid
-GRID_X_PX_RATIO = 8
+# Glade refuses to open too big of a grid, so we need to tune it down a bit
+GRID_X_PX_RATIO = 16
 GRID_Y_PX_RATIO = 4
 def gridAjust(x, y, w, h):
     return (
+        # Ceil ensures zero is not returned, and GTK hates zero for some reason
         math.ceil(int(x) / GRID_X_PX_RATIO),
         math.ceil(int(y) / GRID_Y_PX_RATIO),
         math.ceil(int(w) / GRID_X_PX_RATIO),
-        math.ceil(int(h) / GRID_Y_PX_RATIO / 80)
+        math.ceil(int(h) / GRID_Y_PX_RATIO)
         )
 
 def text(ID, label, x, y, w, h, visable=True):
@@ -144,6 +159,9 @@ def combobox(ID, x, y, w, h, visable=True):
               <object class="GtkComboBoxText" id="{ID}">
                 <property name="visible">{visable}</property>
                 <property name="can-focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+
                <items>
                   <item id="0" translatable="yes">{ID}</item>
                   <item id="1" translatable="yes">bar</item>
@@ -213,6 +231,46 @@ def edittext(ID, x, y, w, h, style, visable=True):
           </object>
         </child>
         """
+def progressBar(ID, x, y, w, h, visable=True):
+    x, y, w, h = gridAjust(x, y, w, h)
+    ID = convertId(ID)
+    return f"""
+        <child>
+          <object class="GtkProgressBar">
+            <property name="visible">{visable}</property>
+            <property name="can-focus">False</property>
+            <property name="pulse-step">0.1</property>
+            <property name="fraction">0.5</property>
+            <layout>
+                <property name="column">{x}</property>
+                <property name="column-span">{w}</property>
+                <property name="row">{y}</property>
+                <property name="row-span">{h}</property>
+            </layout>
+          </object>
+        </child>
+        """
+def scale(ID, x, y, w, h, visable=True):
+    x, y, w, h = gridAjust(x, y, w, h)
+    ID = convertId(ID)
+    return f"""
+        <child>
+          <object class="GtkScale">
+
+            <property name="visible">{visable}</property>
+            <property name="can-focus">True</property>
+            <!-- <property name="adjustment">adjustment1</property> -->
+            <property name="round-digits">1</property>
+            <property name="digits">0</property>
+             <layout>
+                <property name="column">{x}</property>
+                <property name="column-span">{w}</property>
+                <property name="row">{y}</property>
+                <property name="row-span">{h}</property>
+            </layout>
+          </object>
+        </child>
+        """
 # If an element is in the list, return that after applying the predicate,
 # otherwise return default.
 def listGetMapOrDefault(lis, index, predicate, default = False):
@@ -225,7 +283,6 @@ def listGetMapOrDefault(lis, index, predicate, default = False):
 # Takes an index of aproximatly where the dialog is,
 # and returns a parsed version of the data
 def parseDialog(indicator_index, data):
-
     # Find where the dialog declairation starts
     true_start = None
     for offset in range(0, indicator_index):
@@ -263,28 +320,28 @@ def generateXMLFromDialogElement(name, arguments):
             # Id           text                x                   y             w              h 
             arguments[1], arguments[0][1:-1], arguments[2], arguments[3], arguments[4], arguments[5], 
             # Check the style arg if the element is not visable, assume to be visable
-            listGetMapOrDefault(arguments, 6, lambda x: "NOT WS_VISIBLE" not in x, default=True)
+            visable=listGetMapOrDefault(arguments, 6, lambda x: "NOT WS_VISIBLE" not in x, default=True)
         )
     elif "COMBOBOX" == name:
         # https://learn.microsoft.com/en-us/windows/win32/menurc/combobox-control
         return combobox(
             # ID            x                  y         w           h
             arguments[0], arguments[1], arguments[2], arguments[3], arguments[4],
-            listGetMapOrDefault(arguments, 5, lambda x: "NOT WS_VISIBLE" not in x, default=True)
+            visable=listGetMapOrDefault(arguments, 5, lambda x: "NOT WS_VISIBLE" not in x, default=True)
         )
     elif "PUSHBUTTON" == name or "DEFPUSHBUTTON" == name:
         # https://learn.microsoft.com/en-us/windows/win32/menurc/pushbutton-control
         return button(
             # ID              text              x             y            w                 h
             arguments[1], arguments[0][1:-1], arguments[2], arguments[3], arguments[4], arguments[5],
-            listGetMapOrDefault(arguments, 6, lambda x: "NOT WS_VISIBLE" not in x, default=True)
+            visable=listGetMapOrDefault(arguments, 6, lambda x: "NOT WS_VISIBLE" not in x, default=True)
         )
     elif "EDITTEXT" == name:
         # https://learn.microsoft.com/en-us/windows/win32/menurc/edittext-control
         return edittext(
             # ID            x                y          w              h            style
             arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5],
-            listGetMapOrDefault(arguments, 5, lambda x: "NOT WS_VISIBLE" not in x, default=True)
+            visable=listGetMapOrDefault(arguments, 5, lambda x: "NOT WS_VISIBLE" not in x, default=True)
         )
     # https://learn.microsoft.com/en-us/windows/win32/menurc/control-control
     elif "CONTROL" == name:
@@ -296,19 +353,21 @@ def generateXMLFromDialogElement(name, arguments):
             return button(
                 # ID                 text          x             y               w            h
                 arguments[1], arguments[0][1:-1], arguments[4], arguments[5], arguments[6], arguments[7],
-                "NOT WS_VISIBLE" not in style
+                visable="NOT WS_VISIBLE" not in style
                 )
         elif '"button"' == arguments[2].lower() and "BS_AUTOCHECKBOX" in style:
-            # print(style, arguments)
+            
             return checkBox(
                 # ID                 text          x             y               w            h
                 arguments[1], arguments[0][1:-1], arguments[4], arguments[5], arguments[6], arguments[7],
-                "NOT WS_VISIBLE" not in style
+                visable="NOT WS_VISIBLE" not in style
                 )
+        elif '"msctls_progress32"' == arguments[2]:
+            return progressBar(arguments[1], arguments[4], arguments[5], arguments[6], arguments[7], visable="NOT WS_VISIBLE" not in style)
+        elif '"msctls_trackbar32"' == arguments[2]:
+            return scale(arguments[1], arguments[4], arguments[5], arguments[6], arguments[7], visable="NOT WS_VISIBLE" not in style)
         else:
-            print(arguments, arguments[2].lower(), style)
             return "\n<!-- UNSUPPORTED CONTROL STYLE OF '" + arguments[2] + "'' -->"
-
     else:
         return "\n<!-- UNSUPPORTED ELEMENT <" + name + "> -->"
 def generateXMLFromDialog(dialog_data):
@@ -337,11 +396,13 @@ def generateXMLFromDialog(dialog_data):
 def generateGTKUI():
     data = open(RUFUS_RC, "r").read()
     f = open(GTK_UI_FILE, "w")
-    dialog = parseDialog(data.find("CAPTION \"Rufus"), data)
+    
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+    f.write('<!-- GTK UI XML file autogenerated by generate_unix_assets.py - DO NOT EDIT! -->\n')
+    f.write('<!-- The resource aliases are determined by resources.h -->\n')
     f.write("<interface>")
     f.write('\t<requires lib="gtk+" version="4.0"/>')
-    f.write(generateXMLFromDialog(dialog))
+    f.write(generateXMLFromDialog(parseDialog(data.find("CAPTION \"Rufus"), data)))
     f.write("</interface>")
     f.close()
 
@@ -401,6 +462,7 @@ def generateResources():
     f = open(RESOURCE_OUTPUT, "w")
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
     f.write('<!-- GResources XML file autogenerated by generate_unix_assets.py - DO NOT EDIT! -->\n')
+    f.write('<!-- The resource aliases are determined by resources.h -->\n')
     f.write('<gresources>\n')
     f.write(f'  <gresource prefix="/res/">\n')
     for alias, path in ti3_data:
@@ -408,7 +470,7 @@ def generateResources():
         assert path.startswith(PREFIX), "Unexpected resource locations"
         path = path[len(PREFIX):]
         
-        f.write(f"    <file alias=\"{alias}\">{path}</file>\n")
+        f.write(f"    <file alias=\"{convertId(alias)}\">{path}</file>\n")
     f.write('  </gresource>\n')
     f.write('</gresources>')
     f.close()
