@@ -4812,6 +4812,9 @@ fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 CFLAGS="${saved_CFLAGS}"
 
+
+
+
 AM_CFLAGS="$AM_CFLAGS -DUNICODE -D_UNICODE -UNDEBUG -DCOBJMACROS -D__USE_MINGW_ANSI_STDIO=0 -std=gnu11 -Wshadow -Wall -Wformat-security -Wundef -Wunused -Wstrict-prototypes -Wno-restrict -Wno-array-bounds -Werror-implicit-function-declaration -Wbidi-chars=none $nopointersign_cflags"
 
 
@@ -4912,9 +4915,22 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 printf "%s\n" "$as_me: Detected host: $host" >&6;}
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Detected host_os: $host_os" >&5
 printf "%s\n" "$as_me: Detected host_os: $host_os" >&6;}
+
+
+
 # Certain things just need special treatment
 case "$host_os" in
   *linux*)
+    # Non windows systems use a different standard of wchar
+    # NOTE: If somebody is trying to port to somethings else,
+    #       move this!
+    # NOTE: As a side affect, glib's wchar libs might break!
+    #       see: https://gitlab.winehq.org/wine/wine/-/wikis/Winelib-User's-Guide
+    CFLAGS+=" -fshort-wchar"
+
+    # Enable glibc
+    CFLAGS+=" $(pkg-config --cflags gtk4 glib-2.0) "
+
     ac_config_files="$ac_config_files src/linux_specific/Makefile"
 
      if true; then

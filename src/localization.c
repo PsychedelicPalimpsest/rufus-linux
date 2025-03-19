@@ -26,7 +26,6 @@
 #include <pseudo_windows.h>
 #include <windowsx.h>
 #include <stdio.h>
-#include <wchar.h>
 #include <string.h>
 #include <stddef.h>
 

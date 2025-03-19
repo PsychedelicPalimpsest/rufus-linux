@@ -60,21 +60,21 @@ int strncat_s(char *dest, size_t destsz, const char *src, size_t count){
 	return 0;
 }
 
-int lstrcmpiA(const char *str1, const char *str2)
-{
-    if (!str1 && !str2) return 0;
-    if (!str1) return -1;
-    if (!str2) return 1;
+// int lstrcmpiA(const char *str1, const char *str2)
+// {
+//     if (!str1 && !str2) return 0;
+//     if (!str1) return -1;
+//     if (!str2) return 1;
 
-    while (*str1 && *str2) {
-        unsigned char c1 = tolower((unsigned char)*str1);
-        unsigned char c2 = tolower((unsigned char)*str2);
-        if (c1 != c2) return c1 - c2;
-        str1++;
-        str2++;
-    }
-    return tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
-}
+//     while (*str1 && *str2) {
+//         unsigned char c1 = tolower((unsigned char)*str1);
+//         unsigned char c2 = tolower((unsigned char)*str2);
+//         if (c1 != c2) return c1 - c2;
+//         str1++;
+//         str2++;
+//     }
+//     return tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
+// }
 
 
 

@@ -66,6 +66,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],
   [nopointersign_cflags="-Wno-pointer-sign"], [nopointersign_cflags=""])
 CFLAGS="${saved_CFLAGS}"
 
+
+
+
 AM_CFLAGS="$AM_CFLAGS -DUNICODE -D_UNICODE -UNDEBUG -DCOBJMACROS -D__USE_MINGW_ANSI_STDIO=0 -std=gnu11 -Wshadow -Wall -Wformat-security -Wundef -Wunused -Wstrict-prototypes -Wno-restrict -Wno-array-bounds -Werror-implicit-function-declaration -Wbidi-chars=none $nopointersign_cflags"
 
 AC_SUBST([VISIBILITY_CFLAGS])
@@ -83,9 +86,22 @@ AC_CONFIG_FILES([src/common/Makefile])
 AC_CANONICAL_HOST
 AC_MSG_NOTICE([Detected host: $host])
 AC_MSG_NOTICE([Detected host_os: $host_os])
+
+
+
 # Certain things just need special treatment
 case "$host_os" in
   *linux*)
+    # Non windows systems use a different standard of wchar
+    # NOTE: If somebody is trying to port to somethings else,
+    #       move this!
+    # NOTE: As a side affect, glib's wchar libs might break!
+    #       see: https://gitlab.winehq.org/wine/wine/-/wikis/Winelib-User's-Guide
+    CFLAGS+=" -fshort-wchar"
+
+    # Enable glibc
+    CFLAGS+=" $(pkg-config --cflags gtk4 glib-2.0) "
+
     AC_CONFIG_FILES([src/linux_specific/Makefile])
     AM_CONDITIONAL([BUILD_LINUX], [true])
     AM_CONDITIONAL([BUILD_WINDOWS], [false])

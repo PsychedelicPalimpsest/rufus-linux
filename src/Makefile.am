@@ -47,6 +47,7 @@ rufus_LDADD = rufus_rc.o common/libcommon.a bled/libbled.a ext2fs/libext2fs.a ms
 
 if BUILD_LINUX
 rufus_LDADD += linux_specific/liblinux_specific.a
+rufus_LDADD += $(shell pkg-config --libs gtk4 glib-2.0)
 endif
 
 if BUILD_WINDOWS

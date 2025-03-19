@@ -85,7 +85,7 @@ static __inline HANDLE CreateFileA(LPCSTR name, DWORD access, DWORD sharing,
 
 	return fdopen(fd, _LINUX_FLAGS_TO_STR(access));
 }
-BOOL WriteFile(HANDLE handle, LPCVOID buffer, DWORD count, LPDWORD result, void* lpOverlapped_ignored){
+static __inline BOOL WriteFile(HANDLE handle, LPCVOID buffer, DWORD count, LPDWORD result, void* lpOverlapped_ignored){
 	if (handle == NULL) return 0;
 	FILE* f = (FILE*) handle;
 	*result = fwrite(buffer, count, 1, f);

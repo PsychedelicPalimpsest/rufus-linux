@@ -27,7 +27,6 @@
 #include <wincrypt.h>
 #include <wintrust.h>
 #include <stdio.h>
-#include <wchar.h>
 #include <string.h>
 #include <malloc.h>
 #include <io.h>

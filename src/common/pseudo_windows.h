@@ -148,8 +148,6 @@ int strncat_s(char *dest, size_t destsz, const char *src, size_t count);
 
 #include <ctype.h>
 
-int lstrcmpiA(const char *str1, const char *str2);
-
 
 
 DWORD CharUpperBuffW(WCHAR *str, DWORD len);
