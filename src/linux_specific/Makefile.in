@@ -99,7 +99,8 @@ am_liblinux_specific_a_OBJECTS =  \
 	liblinux_specific_a-pseudo_windows.$(OBJEXT) \
 	liblinux_specific_a-locale.$(OBJEXT) \
 	liblinux_specific_a-winio.$(OBJEXT) \
-	liblinux_specific_a-wine_string.$(OBJEXT)
+	liblinux_specific_a-wine_string.$(OBJEXT) \
+	liblinux_specific_a-unix_resources.$(OBJEXT)
 liblinux_specific_a_OBJECTS = $(am_liblinux_specific_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -257,8 +258,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = liblinux_specific.a
-liblinux_specific_a_SOURCES = pseudo_windows.c locale.c winio.c wine_string.c
-liblinux_specific_a_CFLAGS = $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../common -Wno-undef -Wno-strict-aliasing -Wno-shadow
+liblinux_specific_a_SOURCES = pseudo_windows.c locale.c winio.c wine_string.c unix_resources.c
+liblinux_specific_a_CFLAGS = $(shell pkg-config --cflags gtk4 glib-2.0) $(AM_CFLAGS) -I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../common -Wno-undef -Wno-strict-aliasing -Wno-shadow
+EXTRA_DIST = ../unix_resources.xml
 all: all-am
 
 .SUFFIXES:
@@ -337,6 +339,12 @@ liblinux_specific_a-wine_string.o: wine_string.c
 
 liblinux_specific_a-wine_string.obj: wine_string.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-wine_string.obj `if test -f 'wine_string.c'; then $(CYGPATH_W) 'wine_string.c'; else $(CYGPATH_W) '$(srcdir)/wine_string.c'; fi`
+
+liblinux_specific_a-unix_resources.o: unix_resources.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-unix_resources.o `test -f 'unix_resources.c' || echo '$(srcdir)/'`unix_resources.c
+
+liblinux_specific_a-unix_resources.obj: unix_resources.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblinux_specific_a_CFLAGS) $(CFLAGS) -c -o liblinux_specific_a-unix_resources.obj `if test -f 'unix_resources.c'; then $(CYGPATH_W) 'unix_resources.c'; else $(CYGPATH_W) '$(srcdir)/unix_resources.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -505,6 +513,12 @@ uninstall-am:
 	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
 	uninstall-am
 
+
+$(srcdir)/../unix_resources.xml:
+	python $(srcdir)/../generate_unix_assets.py
+
+unix_resources.c: $(srcdir)/../unix_resources.xml
+	glib-compile-resources --target=unix_resources.c --generate-source $(srcdir)/../GResources.xml --sourcedir=$(srcdir)/../../res
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

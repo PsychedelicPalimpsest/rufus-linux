@@ -22,7 +22,7 @@
 import os
 import subprocess
 from os.path import *
-DEBUG=True
+DEBUG=False
 
 
 DIR = dirname(abspath(__file__))

@@ -67,3 +67,4 @@ embedded.loc
 stamp-h1
 /.vs/rufus
 /src/GResources.c
+/src/linux_specific/unix_resources.c
